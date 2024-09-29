@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-depthflow-nodes"
+description = "Implementation of DepthFlow nodes for ComfyUI. Compatible with Ryan's Flex system."
+version = "0.0.1"
+license = {file = "LICENSE"}
+dependencies = ["numpy", "torch", "opencv-python", "pydub", "depthflow", "av"]
+
+[project.urls]
+Repository = "https://github.com/akatz-ai/ComfyUI-AKatz-Nodes"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "akatz"
+DisplayName = "ComfyUI-AKatz-Nodes"
+Icon = "https://i.imgur.com/aiqQI7U.png"
