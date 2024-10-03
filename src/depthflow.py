@@ -7,7 +7,7 @@ from comfy.utils import ProgressBar
 
 class CustomDepthflowScene(DepthScene):
     
-    def __init__(self, state=None, effects=None, progress_callback=None, **kwargs):
+    def __init__(self, state=None, effects=None, progress_callback=None, num_frames=30, input_fps=30.0, output_fps=30.0, animation_speed=1.0, **kwargs):
         DepthScene.__init__(self, **kwargs)
         self.frames = deque()
         self.progress_callback = progress_callback
@@ -19,6 +19,12 @@ class CustomDepthflowScene(DepthScene):
         # Initialize images and depth_maps
         self.images = None
         self.depth_maps = None
+        self.input_fps = input_fps
+        self.output_fps = output_fps
+        self.animation_speed = animation_speed
+        self.num_frames = num_frames
+        self.video_time = 0.0
+        self.frame_index = 0
         
     def input(self, images, depth_maps):
         # Store the images and depth maps
@@ -54,9 +60,16 @@ class CustomDepthflowScene(DepthScene):
             self.add_animation(motion)
         
     def update(self):
+        
+        frame_duration = 1.0 / self.input_fps
+        
+        while self.time > self.video_time:
+            self.video_time += frame_duration
+            self.frame_index += 1
+        
         # Set the current image and depth map based on self.frame
         if self.images is not None and self.depth_maps is not None:
-            frame_index = min(self.frame, len(self.images) - 1)
+            frame_index = min(self.frame_index, len(self.images) - 1)
             current_image = self.images[frame_index]
             current_depth = self.depth_maps[frame_index]
             
@@ -67,7 +80,7 @@ class CustomDepthflowScene(DepthScene):
             # Set the current image and depth map
             self.image.from_image(image)
             self.depth.from_image(depth)
-                
+            
         DepthScene.update(self)
         
         # If there are custom animation frames present, use them instead of the normal animation frames
@@ -89,23 +102,27 @@ class CustomDepthflowScene(DepthScene):
             for key, value in self.override_state.items():
                 if hasattr(self.state, key):
                     setattr(self.state, key, value)
-                    
-        
-    # def next(self):
-    #     DepthScene.next(self, self.dt)
-    #     width, height = self.resolution
-    #     array = np.frombuffer(self._final.texture.fbo().read(), dtype=np.uint8).reshape((height, width, 3))
 
-    #     # To Tensor
-    #     tensor = torch.from_numpy(array)
+            if "tiling_mode" in self.override_state:
+                if self.override_state["tiling_mode"] == "repeat":
+                    self.image.repeat(True)
+                    self.depth.repeat(True)
+                    self.state.mirror = False
+                elif self.override_state["tiling_mode"] == "mirror":
+                    self.image.repeat(False)
+                    self.depth.repeat(False)
+                    self.state.mirror = True
+                else:
+                    self.image.repeat(False)
+                    self.depth.repeat(False)
+                    self.state.mirror = False
         
-    #     # Accumulate the frame
-    #     self.frames.append(tensor)
+    @property
+    def tau(self) -> float:
+        return super().tau * self.animation_speed
         
-    #     if self.progress_callback:
-    #         self.progress_callback()
-        
-    def _render_ui(self):
+    def next(self, dt):
+        DepthScene.next(self, dt)
         width, height = self.resolution
         array = np.frombuffer(self._final.texture.fbo().read(), dtype=np.uint8).reshape((height, width, 3))
 
@@ -117,6 +134,21 @@ class CustomDepthflowScene(DepthScene):
         
         if self.progress_callback:
             self.progress_callback()
+            
+        return self
+        
+    # def _render_ui(self):
+    #     width, height = self.resolution
+    #     array = np.frombuffer(self._final.texture.fbo().read(), dtype=np.uint8).reshape((height, width, 3))
+
+    #     # To Tensor
+    #     tensor = torch.from_numpy(array)
+        
+    #     # Accumulate the frame
+    #     self.frames.append(tensor)
+        
+    #     if self.progress_callback:
+    #         self.progress_callback()
         
         
     def get_accumulated_frames(self):
@@ -132,13 +164,14 @@ class Depthflow:
                 "image": ("IMAGE",),  # Input image
                 "depth_map": ("IMAGE",),  # Depthmap input
                 "motion": ("DEPTHFLOW_MOTION",),  # Motion object
-                "speed": ("FLOAT", {"default": 1.0, "min": 0.01, "step": 0.01}),
-                "fps": ("INT", {"default": 30, "min": 1, "step": 1}),
+                "animation_speed": ("FLOAT", {"default": 1.0, "min": 0.01, "step": 0.01}),
+                "input_fps": ("FLOAT", {"default": 30.0, "min": 1.0, "step": 1.0}),
+                "output_fps": ("FLOAT", {"default": 30.0, "min": 1.0, "step": 1.0}),
                 "num_frames": ("INT", {"default": 30, "min": 1, "step": 1}),
                 "quality": ("INT", {"default": 50, "min": 1, "max": 100, "step": 1}),
                 "ssaa": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1}),
                 "invert": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "mirror": ("BOOLEAN", {"default": True}),
+                "tiling_mode": (["mirror", "repeat", "none"], {"default": "mirror"}),
             },
             "optional": {
                 "effects": ("DEPTHFLOW_EFFECTS",),  # DepthState object
@@ -156,13 +189,15 @@ class Depthflow:
     - depth_map: Depthmap corresponding to the image.
     - options: DepthState object.
     - motion: Depthflow motion object.
-    - fps: Frames per second for the output video.
+    - input_fps: Frames per second for the input video.
+    - output_fps: Frames per second for the output video.
     - num_frames: Number of frames for the output video.
     - quality: Quality of the output video.
     - ssaa: Super sampling anti-aliasing samples.
-    - motion: Animation object.
+    - invert: Invert the depthmap.
+    - tiling_mode: Tiling mode for the image.
     """
-    
+
     def __init__(self):
         self.progress_bar = None
 
@@ -176,18 +211,27 @@ class Depthflow:
     def end_progress(self):
         self.progress_bar = None
 
-    def apply_depthflow(self, image, depth_map, motion, speed, fps, num_frames, quality, ssaa, invert, mirror, effects=None):
+    def apply_depthflow(self, image, depth_map, motion, animation_speed, input_fps, output_fps, num_frames, quality, ssaa, invert, tiling_mode, effects=None):
         # Create the scene
-        state = { "invert": invert, "mirror": mirror }
-        scene = CustomDepthflowScene(state=state, effects=effects, progress_callback=self.update_progress, backend="headless")
-        
+        state = { "invert": invert, "tiling_mode": tiling_mode}
+        scene = CustomDepthflowScene(
+            state=state,
+            effects=effects,
+            progress_callback=self.update_progress,
+            num_frames=num_frames,
+            input_fps=input_fps,
+            output_fps=output_fps,
+            animation_speed=animation_speed,
+            backend="headless",
+        )
+
         # Convert image and depthmap to numpy arrays
         image = image.numpy()
         depth_map = depth_map.numpy()
-        
+
         print(image.shape)
         print(depth_map.shape)
-        
+
         # Ensure the arrays have the correct shape and data type
         # If they are [H, W, C], expand to [1, H, W, C]
         if image.ndim == 3:  # Single image
@@ -208,17 +252,17 @@ class Depthflow:
             image = (image * 255).astype(np.uint8)  # Convert to uint8 if necessary
         if depth_map.dtype != np.uint8:
             depth_map = (depth_map * 255).astype(np.uint8)  # Convert to uint8 if necessary
-        
+
         print(image.shape)
         print(depth_map.shape)
-        
+
         # Determine the number of frames
         num_image_frames = image.shape[0]
         num_depth_frames = depth_map.shape[0]
-        
+
         # Determine the number of frames to render
         num_render_frames = max(num_frames, num_image_frames, num_depth_frames)
-        
+
         # Expand images and depth maps to match num_render_frames
         def expand_frames(array, num_frames):
             if array.shape[0] == num_frames:
@@ -230,55 +274,58 @@ class Depthflow:
 
         image = expand_frames(image, num_render_frames)
         depth_map = expand_frames(depth_map, num_render_frames)
-        
+
         # Get width and height of images
         height, width = image.shape[1], image.shape[2]
         print(width)
         print(height)
-        
+
         # Input the image and depthmap into the scene
         scene.input(images=image, depth_maps=depth_map)
-        
+
         print('after input')
-        
+
         # Add animation based on the preset
         # preset_function = getattr(Presets, motion, None)
         # if preset_function:
         #     scene.add_animation(preset_function(intensity=intensity))
         # else:
         #     raise ValueError(f"Unknown preset: {motion}")
-        
+
         scene.custom_animation(motion)
-        
+
         # Calculate the duration based on fps and num_frames, error checking
-        if fps <= 0 or num_frames <= 0:
+        if num_frames <= 0:
             raise ValueError("FPS and number of frames must be greater than 0")
-        duration = float(num_frames) / float(fps)
+        duration = float(num_frames) / input_fps
         
-        self.start_progress(num_frames, desc="Depthflow Rendering")
+        # Calculate total frames
+        total_frames = duration * output_fps
         
-        scene.state.height = 0.9
-        
+        self.start_progress(total_frames, desc="Depthflow Rendering")
+
         # modulate duration by speed
-        duration = duration * speed
+        # duration = duration * speed * 2
+
+        print(f"duration: {duration}")
 
         # Render the output video
-        scene.main(render=False, output=None, fps=fps, time=duration, speed=speed, quality=quality, ssaa=ssaa, scale=1.0, width=width, height=height, ratio=None, benchmark=True)
-        
+        scene.main(render=False, output=None, fps=output_fps, time=duration, speed=1.0, quality=quality, ssaa=ssaa, scale=1.0, width=width, height=height, ratio=None, benchmark=True)
+
         video = scene.get_accumulated_frames()
-        
+
         self.end_progress()
-        
+
         # Load the video and convert to tensor
         # video_path = output[0]  # Assuming output is a list with video path
         # video, _, _ = read_video(video_path, pts_unit='sec')
-        
+
         # Normalize the video frames to [0, 1]
         video = video.float() / 255.0
-        
+
         # Rotate the frames to the left
         # video = torch.cat((video[1:], video[:1]), dim=0)
-        
+
         return (video,)
 
 

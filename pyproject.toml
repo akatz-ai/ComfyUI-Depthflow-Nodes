@@ -6,10 +6,10 @@ license = {file = "LICENSE"}
 dependencies = ["numpy", "torch", "opencv-python", "pydub", "depthflow", "av"]
 
 [project.urls]
-Repository = "https://github.com/akatz-ai/ComfyUI-AKatz-Nodes"
+Repository = "https://github.com/akatz-ai/ComfyUI-Depthflow-Nodes"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
 PublisherId = "akatz"
-DisplayName = "ComfyUI-AKatz-Nodes"
+DisplayName = "ComfyUI-Depthflow-Nodes"
 Icon = "https://i.imgur.com/aiqQI7U.png"

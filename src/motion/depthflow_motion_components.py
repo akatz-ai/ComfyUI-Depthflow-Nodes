@@ -11,11 +11,11 @@ class DepthflowMotionSine(DepthflowMotion):
             "required": {
                 **super().INPUT_TYPES()["required"],
                 "target": (TARGETS, {"default": TARGETS[0]}),
-                "amplitude": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.1}),
-                "cycles": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.1}),
-                "phase": ("FLOAT", {"default": 0.0}),
+                "amplitude": ("FLOAT", {"default": 1.0, "min": -10.0, "max": 10.0, "step": 0.01}),
+                "cycles": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01}),
+                "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
                 "reverse": ("BOOLEAN", {"default": False}),
-                "bias": ("FLOAT", {"default": 0.0}),
+                "bias": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
                 "cumulative": ("BOOLEAN", {"default": False}),
             },
         }
@@ -63,11 +63,11 @@ class DepthflowMotionCosine(DepthflowMotion):
             "required": {
                 **super().INPUT_TYPES()["required"],
                 "target": (TARGETS, {"default": TARGETS[0]}),
-                "amplitude": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.1}),
-                "cycles": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.1}),
-                "phase": ("FLOAT", {"default": 0.0}),
+                "amplitude": ("FLOAT", {"default": 1.0, "min": -10.0, "max": 10.0, "step": 0.01}),
+                "cycles": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01}),
+                "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
                 "reverse": ("BOOLEAN", {"default": False}),
-                "bias": ("FLOAT", {"default": 0.0}),
+                "bias": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
                 "cumulative": ("BOOLEAN", {"default": False}),
             },
         }
@@ -140,7 +140,7 @@ class DepthflowMotionLinear(DepthflowMotion):
 
     @classmethod
     def get_modifiable_params(cls):
-        return ["start", "end", "low", "high", "exponent"]
+        return ["start", "end", "low", "high", "exponent", "None"]
 
     def create_internal(self, target, start, end, low, high, exponent, reverse, cumulative, **kwargs):
         # Create the Linear component
@@ -189,7 +189,7 @@ class DepthflowMotionExponential(DepthflowMotion):
 
     @classmethod
     def get_modifiable_params(cls):
-        return ["base", "scale"]
+        return ["base", "scale", "None"]
 
     def create_internal(self, target, base, scale, reverse, cumulative, **kwargs):
         # Create the Exponential component
@@ -238,7 +238,7 @@ class DepthflowMotionArc(DepthflowMotion):
 
     @classmethod
     def get_modifiable_params(cls):
-        return ["start", "middle", "end"]
+        return ["start", "middle", "end", "None"]
 
     def create_internal(self, target, start, middle, end, reverse, cumulative, **kwargs):
         # Create the Arc component
@@ -265,7 +265,7 @@ class DepthflowMotionSetTarget(DepthflowMotion):
             "required": {
                 **super().INPUT_TYPES()["required"],
                 "target": (TARGETS, {"default": TARGETS[0]}),
-                "value": ("FLOAT", {"default": 0.0, "min": -9999.0, "max": 9999.0, "step": 0.01}),
+                "value": ("FLOAT", {"default": 0.0, "min": -9999.0, "max": 9999.0, "step": 0.001}),
             },
         }
 

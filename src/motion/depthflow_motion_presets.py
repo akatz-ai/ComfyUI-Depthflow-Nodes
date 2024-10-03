@@ -2,6 +2,18 @@ from DepthFlow.Motion import Presets
 from ..base_flex import BaseFlex
 
 class DepthflowMotionPreset(BaseFlex):
+    
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            **super().INPUT_TYPES(),
+            "required": {
+                **super().INPUT_TYPES()["required"],
+                "intensity": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01}),
+                "reverse": ("BOOLEAN", {"default": False}),
+            }
+        }
+    
     CATEGORY = "🌊 Depthflow/Motion/Presets"
     RETURN_TYPES = ("DEPTHFLOW_MOTION",)
 
@@ -12,12 +24,10 @@ class DepthflowMotionPresetCircle(DepthflowMotionPreset):
             **super().INPUT_TYPES(),
             "required": {
                 **super().INPUT_TYPES()["required"],
-                "intensity": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 5.0, "step": 0.01}),
-                "reverse": ("BOOLEAN", {"default": False}),
                 "smooth": ("BOOLEAN", {"default": True}),
-                "phase_x": ("FLOAT", {"default": 0.0, "min": -1.0, "max": 1.0, "step": 0.01}),
-                "phase_y": ("FLOAT", {"default": 0.0, "min": -1.0, "max": 1.0, "step": 0.01}),
-                "phase_z": ("FLOAT", {"default": 0.0, "min": -1.0, "max": 1.0, "step": 0.01}),
+                "phase_x": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
+                "phase_y": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
+                "phase_z": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
                 "amplitude_x": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "amplitude_y": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "amplitude_z": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01}),
@@ -64,10 +74,8 @@ class DepthflowMotionPresetZoom(DepthflowMotionPreset):
             **super().INPUT_TYPES(),
             "required": {
                 **super().INPUT_TYPES()["required"],
-                "intensity": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 5.0, "step": 0.1}),
-                "reverse": ("BOOLEAN", {"default": False}),
                 "smooth": ("BOOLEAN", {"default": True}),
-                "phase": ("FLOAT", {"default": 0.0}),
+                "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
                 "loop": ("BOOLEAN", {"default": False}),
             }
         }
@@ -105,11 +113,9 @@ class DepthflowMotionPresetDolly(DepthflowMotionPreset):
             **super().INPUT_TYPES(),
             "required": {
                 **super().INPUT_TYPES()["required"],
-                "intensity": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 5.0, "step": 0.1}),
-                "reverse": ("BOOLEAN", {"default": False}),
                 "smooth": ("BOOLEAN", {"default": True}),
                 "loop": ("BOOLEAN", {"default": True}),
-                "depth": ("FLOAT", {"default": 0.5}),
+                "depth": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
         
@@ -120,6 +126,7 @@ class DepthflowMotionPresetDolly(DepthflowMotionPreset):
     - reverse: Reverse the dolly motion
     - smooth: Smooth the dolly motion
     - loop: Loop the dolly motion
+    - depth: Depth of the dolly motion
     """
     
     @classmethod
@@ -145,12 +152,10 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
             **super().INPUT_TYPES(),
             "required": {
                 **super().INPUT_TYPES()["required"],
-                "intensity": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 5.0, "step": 0.1}),
-                "reverse": ("BOOLEAN", {"default": False}),
-                "smooth": ("BOOLEAN", {"default": True}),
                 "loop": ("BOOLEAN", {"default": True}),
-                "phase": ("FLOAT", {"default": 0.0}),
-                "static_value": ("FLOAT", {"default": 0.3}),
+                "smooth": ("BOOLEAN", {"default": True}),
+                "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
+                "static_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
         
@@ -161,6 +166,7 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
     - reverse: Reverse the vertical motion
     - smooth: Smooth the vertical motion
     - loop: Loop the vertical motion
+    - static_value: Static value of the vertical motion
     """
     
     @classmethod
@@ -187,12 +193,10 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
             **super().INPUT_TYPES(),
             "required": {
                 **super().INPUT_TYPES()["required"],
-                "intensity": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 5.0, "step": 0.1}),
-                "reverse": ("BOOLEAN", {"default": False}),
-                "smooth": ("BOOLEAN", {"default": True}),
                 "loop": ("BOOLEAN", {"default": True}),
-                "phase": ("FLOAT", {"default": 0.0}),
-                "static_value": ("FLOAT", {"default": 0.3}),
+                "smooth": ("BOOLEAN", {"default": True}),
+                "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
+                "static_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
         
@@ -203,8 +207,8 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
     - reverse: Reverse the horizontal motion
     - smooth: Smooth the horizontal motion
     - loop: Loop the horizontal motion
+    - static_value: Static value of the horizontal motion
     """
-    
     
     @classmethod
     def get_modifiable_params(cls):
@@ -229,9 +233,7 @@ class DepthflowMotionPresetOrbital(DepthflowMotionPreset):
             **super().INPUT_TYPES(),
             "required": {
                 **super().INPUT_TYPES()["required"],
-                "intensity": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 5.0, "step": 0.1}),
-                "depth": ("FLOAT", {"default": 0.5}),
-                "reverse": ("BOOLEAN", {"default": False}),
+                "depth": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
         
