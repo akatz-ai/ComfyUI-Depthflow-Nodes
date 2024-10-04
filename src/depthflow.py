@@ -5,7 +5,6 @@ import numpy as np
 from collections import deque
 from comfy.utils import ProgressBar
 import gc
-import tracemalloc
 
 class CustomDepthflowScene(DepthScene):
     
