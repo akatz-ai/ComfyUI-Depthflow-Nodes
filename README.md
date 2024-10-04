@@ -105,7 +105,7 @@ Depthflow is one of the first custom node packs to extend the **Flex System**, a
 
 1. ComfyUI Manager:
 
-- This node pack is available to install via the [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager). You can find it in the Custom Nodes section by searching for "Depthflow".
+- This node pack is available to install via the [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager). You can find it in the Custom Nodes section by searching for "Depthflow" and clicking on the entry called "🌊 Depthflow Nodes".
 
 2. Clone the repository:
 - Navigate to ComfyUI/custom_nodes folder in terminal or command prompt.
