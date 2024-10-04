@@ -2,11 +2,11 @@
 
 **Turn your 2D images into stunning 2.5D parallax animations using Depthflow in ComfyUI.**
 
-🙌 **An implementation of Depthflow created by [Tremeschin](https://github.com/Tremeschin)!** 
+🙌 **An implementation of the Depthflow library in ComfyUI originally created by [Tremeschin](https://github.com/Tremeschin)!** 
 - Check out the [Depthflow github page](https://github.com/BrokenSource/DepthFlow)!
 - Also see his [Awesome Website](https://brokensrc.dev/depthflow/) for more info!
 
-⚡ **Extends RyanOnTheInside's Flex System** for additional motion control and dynamic features!
+⚡ **Extends [RyanOnTheInside's Flex System](https://github.com/ryanontheinside/ComfyUI_RyanOnTheInside)** for additional motion control and dynamic features!
 
 ## 🚀 Showcase
 
@@ -111,6 +111,6 @@ Depthflow is one of the first custom node packs to extend the **Flex System**, a
 - Navigate to ComfyUI/custom_nodes folder in terminal or command prompt.
 - Clone the repo using the following command:
 ```bash
-git clone https://github.com/yourusername/depthflow-nodepack.git
+git clone https://github.com/akatz-ai/ComfyUI-Depthflow-Nodes.git
 ```
 - Restart ComfyUI
