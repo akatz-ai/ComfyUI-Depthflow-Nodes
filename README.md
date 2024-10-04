@@ -6,11 +6,11 @@
 
 ## 🚀 Showcase
 
-![](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3ExZHZ1NzN0MW1tbHMydHE1ZXJqeXFrcDQxYndvMGJ3d25yNzRibiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hsD6dpQuIeu9h7t8b1/giphy.webp)
-![](https://media3.giphy.com/media/EFPKZv80znaW1xHh1M/giphy.webp)
-![](https://media0.giphy.com/media/JO0JR2MbaBprvzg41M/giphy.gif)
-
-
+<div style="display: inline-block;">
+    <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3ExZHZ1NzN0MW1tbHMydHE1ZXJqeXFrcDQxYndvMGJ3d25yNzRibiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hsD6dpQuIeu9h7t8b1/giphy.webp" alt="Description" width="250"/>
+    <img src="https://media3.giphy.com/media/EFPKZv80znaW1xHh1M/giphy.webp" alt="Description" width="250"/>
+    <img src="https://media0.giphy.com/media/JO0JR2MbaBprvzg41M/giphy.gif" alt="Description" width="250"/>
+</div>
 
 ## 📦 What's Included
 
