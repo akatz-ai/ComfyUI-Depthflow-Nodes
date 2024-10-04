@@ -159,8 +159,8 @@ class DepthflowEffectDOF(DepthflowEffects):
         }
 
     DESCRIPTION = """
-    Depthflow Effects Node:
-    This node allows the user to configure the depth flow effects.
+    Depthflow Effects Depth of Field Node:
+    This node allows the user to configure the Depth of Field effect.
     - strength: Strength of the depth flow effect
     - feature_threshold: Minimum feature value to apply the depth flow effect
     - feature_param: Parameter to modulate the depth flow effect

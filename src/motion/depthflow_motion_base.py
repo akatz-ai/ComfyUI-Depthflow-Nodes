@@ -119,16 +119,12 @@ class DepthflowMotion(BaseFlex):
 
         # Combine with incoming motion
         if motion is None:
-            print(f"motion is None, returning current_preset: {current_preset}")
             combined_preset = current_preset
         elif isinstance(motion, Preset):
-            print(f"motion is Preset, combining with current_preset: {current_preset}")
             combined_preset = CombinedPreset(presets=[motion, current_preset])
         elif isinstance(motion, CombinedPreset):
-            print(f"motion is CombinedPreset, combining with current_preset: {current_preset}")
             combined_preset = CombinedPreset(presets=motion.presets + [current_preset])
         else:
             raise ValueError("'motion' should be a Preset or CombinedPreset")
 
-        print(f"returning combined_preset: {combined_preset}")
         return combined_preset
