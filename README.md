@@ -7,10 +7,10 @@
 ## 🚀 Showcase
 
 ![](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3ExZHZ1NzN0MW1tbHMydHE1ZXJqeXFrcDQxYndvMGJ3d25yNzRibiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hsD6dpQuIeu9h7t8b1/giphy.webp)
+![](https://media3.giphy.com/media/EFPKZv80znaW1xHh1M/giphy.webp)
+![](https://media0.giphy.com/media/JO0JR2MbaBprvzg41M/giphy.gif)
 
-*Example: Watch a static 2D image transform into a motion-filled scene with depth.*
 
----
 
 ## 📦 What's Included
 
@@ -18,18 +18,20 @@ This Depthflow Node Pack includes everything you need to create complex parallax
 
 ### **1. Base Node: Depthflow**
 
-The heart of the node pack. The **Depthflow** node takes a 2D image and its corresponding depth map and applies various types of motion animation (Zoom, Dolly, Circle, etc.) to generate a parallax effect. This node outputs a batch of images to be rendered as a video.
+<img src="https://i.imgur.com/GmemdKs.png" alt="Description" width="400"/>
+
+The heart of the node pack. The **Depthflow** node takes an image (or video) and its corresponding depth map and applies various types of motion animation (Zoom, Dolly, Circle, etc.) to generate a parallax effect. This node outputs a batch of images to be rendered as a video.
 
 **Parameters:**
-- `image`: Input image.
-- `depth_map`: Depthmap corresponding to the image.
-- `options`: DepthState object for customizable depth rendering.
-- `motion`: Depthflow motion object for configuring animation.
+- `image`: Input image or image batch.
+- `depth_map`: Depthmap image or image batch corresponding to the input image.
+- `motion`: Depthflow motion object(s) for configuring animation.
+- `effects`: (Optional) Depthflow Effects including DOF and Vignette that can be stacked.
+- `num_frames`: Number of frames in the animation.
 - `input_fps`: Frames per second for the input.
 - `output_fps`: Frames per second for the output video.
-- `num_frames`: Number of frames in the animation.
-- `quality`: Output quality.
-- `ssaa`: Super sampling anti-aliasing samples.
+- `quality`: Output quality (1-100)
+- `ssaa`: Super sampling anti-aliasing samples (0.0-2.0)
 - `invert`: Invert the depthmap.
 - `tiling_mode`: Control for tiling the image.
 
@@ -39,16 +41,18 @@ The heart of the node pack. The **Depthflow** node takes a 2D image and its corr
 
 ### **2. Depthflow Effects**
 
+<img src="https://i.imgur.com/SGPWerb.png" alt="Description" width="800"/>
+
 Enhance the parallax animation with customizable effects such as Depth of Field and Vignette. These effects can be configured to interact with the depth information for a more immersive experience.
 
-#### **Depth of Field (DOF) Effect**
+- **DOF Effect**: A depth-aware blur effect to simulate focus and bokeh, giving your animations a cinematic feel.
+- **Vignette Effect**: A vignette effect that darkens the edges of the frame.
 
-The **DOF** node lets you apply depth-aware blur to simulate focus and bokeh, giving your animations a cinematic feel.
+**Examples:**
 
-**Parameters:**
-- `strength`, `feature_threshold`, `feature_param`, `dof_start`, `dof_end`, etc., for controlling focus zones, intensity, and quality.
+![](https://media1.giphy.com/media/nBiAFUBE4BSm87CcQm/giphy.webp)
 
-![DOF Effect Demo](./path/to/dof_effect_demo.gif)
+*(Depth of Field effect modulated over time by a feature to more clearly demonstrate the effect)*
 
 ---
 
@@ -57,34 +61,37 @@ The **DOF** node lets you apply depth-aware blur to simulate focus and bokeh, gi
 Take control of your animations with pre-configured **motion presets** or dive deep with granular **motion components** to create exactly the movement you want.
 
 #### **Motion Presets**
+
+![](https://i.imgur.com/8BamKev.png)
+
 Simplify your workflow with ready-to-use presets for common animations. Nodes like **Zoom**, **Dolly**, and **Circle** abstract away complex parameters so you can focus on creative output.
 
-- **Zoom Motion Preset**: Configure zoom intensity, direction, and looping behavior.
-- **Circle Motion Preset**: Creates smooth circular motion around a point of focus.
+- **Orbital Motion Preset**: Creates an orbital motion around a focal point, giving a 3D rotational effect.
+- **Dolly Motion Preset**: Simulates a dolly camera motion, moving toward or away from the subject for a dynamic depth effect.
+- **Circle Motion Preset**: Creates smooth circular motion around a point of focus, simulating rotational camera movement.
+- **Vertical Motion Preset**: Applies vertical panning motion to the scene, moving the view up or down.
+- **Horizontal Motion Preset**: Moves the scene horizontally, simulating a side-to-side panning motion.
+- **Zoom Motion Preset**: Configure zoom intensity, direction (inward or outward), and looping behavior for dramatic zoom effects.
 
-**Example**:
-- `intensity`, `reverse`, `smooth`, `loop`, etc.
+**Examples**:
 
-![Zoom Motion Preset Demo](./path/to/zoom_motion_demo.gif)
+![](https://media2.giphy.com/media/C69HgFr9C2b2pdlYF9/giphy.webp)
+<img src="https://media2.giphy.com/media/h5Lh02liQQlXe2FcAl/giphy.webp" alt="Description" width="238"/>
 
 #### **Motion Components**
+
+![](https://i.imgur.com/6JBOVfa.png)
+
 If you want finer control, the **motion components** offer modular building blocks to animate individual parameters like height, zoom, and center of rotation. Mix and match different functions like Sine, Cosine, Linear, and more for highly customized motion paths.
 
-- **Sine Motion Component**: Applies a sine wave modulation to any target parameter for smooth, oscillating motion.
-
-**Parameters:**
-- `target`: The parameter to modulate (Zoom, Height, Focus, etc.).
-- `amplitude`, `cycles`, `phase`, and more for custom wave behavior.
+- **Linear Motion Component**: Applies a linear motion to the specified target, creating a steady and consistent movement.
+- **Exponential Motion Component**: Generates motion with an exponential curve, starting slow and accelerating over time.
+- **Sine Motion Component**: Applies a sine wave modulation to any target parameter, creating a smooth, oscillating motion.
+- **Cosine Motion Component**: Similar to the sine component, but starts at a different phase, useful for wave-like motion with a different timing.
+- **Arc Motion Component**: Moves the target parameter along a smooth arc, perfect for rotational or sweeping motion.
+- **Set Target Motion Component**: Explicitly sets the value of a specified target parameter, overriding other motion inputs.
 
 ![Sine Motion Component Demo](./path/to/sine_motion_demo.gif)
-
----
-
-### **4. Dynamic Features**
-
-For even more control, the motion nodes accept an optional **"feature"** input, which allows the animation to be influenced by external factors like audio or masks. This adds new layers of creativity and flexibility to your animations.
-
----
 
 ## 🎨 Extending RyanOnTheInside's Flex System
 
