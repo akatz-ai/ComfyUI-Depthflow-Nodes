@@ -2,6 +2,10 @@
 
 **Turn your 2D images into stunning 2.5D parallax animations using Depthflow in ComfyUI.**
 
+🙌 **An implementation of Depthflow created by [Tremeschin](https://github.com/Tremeschin)!** 
+- Check out the [Depthflow github page](https://github.com/BrokenSource/DepthFlow)!
+- Also see his [Awesome Website](https://brokensrc.dev/depthflow/) for more info!
+
 ⚡ **Extends RyanOnTheInside's Flex System** for additional motion control and dynamic features!
 
 ## 🚀 Showcase
@@ -91,17 +95,22 @@ If you want finer control, the **motion components** offer modular building bloc
 - **Arc Motion Component**: Moves the target parameter along a smooth arc, perfect for rotational or sweeping motion.
 - **Set Target Motion Component**: Explicitly sets the value of a specified target parameter, overriding other motion inputs.
 
-![Sine Motion Component Demo](./path/to/sine_motion_demo.gif)
+See the official [Depthflow Parameters page](https://brokensrc.dev/depthflow/learn/parameters/) to see how each target parameter affects the output.
 
 ## 🎨 Extending RyanOnTheInside's Flex System
 
-Depthflow is one of the first custom node packs to extend the **Flex System**, a versatile system developed by RyanOnTheInside. By building on Flex, Depthflow opens up a range of possibilities for dynamically adjusting motion parameters based on user-defined features like sound, colors, or masks. This integration pushes the boundaries of what's possible in ComfyUI animations.
-
----
+Depthflow is one of the first custom node packs to extend the **Flex System**, a versatile system developed by [RyanOnTheInside](https://github.com/ryanontheinside). By building on Flex, Depthflow opens up a range of possibilities for dynamically adjusting motion parameters based on user-defined features like sound, colors, or masks. Check out [RyanOnTheInside's Github Page](https://github.com/ryanontheinside/ComfyUI_RyanOnTheInside) for more details on how to set up and use the Flex system.
 
 ## 🔧 Installation and Usage
 
-1. Clone the repository:
+1. ComfyUI Manager:
+
+- This node pack is available to install via the [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager). You can find it in the Custom Nodes section by searching for "Depthflow".
+
+2. Clone the repository:
+- Navigate to ComfyUI/custom_nodes folder in terminal or command prompt.
+- Clone the repo using the following command:
 ```bash
 git clone https://github.com/yourusername/depthflow-nodepack.git
 ```
+- Restart ComfyUI
