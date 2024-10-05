@@ -216,8 +216,14 @@ class Depthflow:
         )
 
         # Convert image and depthmap to numpy arrays
-        image = image.numpy()
-        depth_map = depth_map.numpy()
+        if image.is_cuda:
+            image = image.cpu().numpy()
+        else:
+            image = image.numpy()
+        if depth_map.is_cuda:
+            depth_map = depth_map.cpu().numpy()
+        else:
+            depth_map = depth_map.numpy()
 
         # Ensure the arrays have the correct shape and data type
         if image.ndim == 3:
