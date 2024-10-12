@@ -18,6 +18,8 @@
 
 ## 📦 What's Included
 
+(For a full breakdown of all nodes and their parameters, [check out the Depthflow Nodes Docs](https://cyber-damselfly-b6c.notion.site/Depthflow-Nodes-11dfd5b1ca3b8007ae9dc0bd0c65690a))
+
 This Depthflow Node Pack includes everything you need to create complex parallax animations. From basic motion presets to fine-tuned motion components, here's a breakdown of what you can expect:
 
 ### **1. Base Node: Depthflow**
