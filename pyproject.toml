@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-depthflow-nodes"
 description = "Implementation of DepthFlow nodes for ComfyUI, adds a 2.5D parallax effect to images and videos. Compatible with Ryan's Flex system."
-version = "0.0.3"
+version = "1.0.0"
 license = {file = "LICENSE"}
 dependencies = ["numpy", "torch", "pydantic", "depthflow"]
 
