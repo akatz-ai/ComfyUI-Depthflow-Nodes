@@ -1,4 +1,4 @@
 numpy
 torch
-depthflow==0.6.0
+depthflow==0.7.1
 pydantic

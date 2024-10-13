@@ -8,7 +8,7 @@ from typing import List
 class Target(BrokenEnum):
     Nothing            = "nothing"
     Height             = "height"
-    Static             = "static"
+    Steady             = "steady"
     Focus              = "focus"
     Zoom               = "zoom"
     Isometric          = "isometric"
