@@ -155,7 +155,7 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
                 "loop": ("BOOLEAN", {"default": True}),
                 "smooth": ("BOOLEAN", {"default": True}),
                 "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
-                "static_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "steady_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
         
@@ -166,14 +166,14 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
     - reverse: Reverse the vertical motion
     - smooth: Smooth the vertical motion
     - loop: Loop the vertical motion
-    - static_value: Static value of the vertical motion
+    - steady_value: Static value of the vertical motion
     """
     
     @classmethod
     def get_modifiable_params(cls):
-        return ["intensity", "phase", "static_value", "None"]
+        return ["intensity", "phase", "steady_value", "None"]
 
-    def create_internal(self, intensity, reverse, smooth, loop, phase, static_value, **kwargs):
+    def create_internal(self, intensity, reverse, smooth, loop, phase, steady_value, **kwargs):
         # Create the Vertical preset object with the provided parameters
         preset = Presets.Vertical(
             intensity=intensity,
@@ -181,7 +181,7 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
             smooth=smooth,
             loop=loop,
             phase=phase,
-            static=static_value,
+            steady=steady_value,
         )
         return (preset,)
 
@@ -196,7 +196,7 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
                 "loop": ("BOOLEAN", {"default": True}),
                 "smooth": ("BOOLEAN", {"default": True}),
                 "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
-                "static_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "steady_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
         
@@ -207,14 +207,14 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
     - reverse: Reverse the horizontal motion
     - smooth: Smooth the horizontal motion
     - loop: Loop the horizontal motion
-    - static_value: Static value of the horizontal motion
+    - steady_value: Static value of the horizontal motion
     """
     
     @classmethod
     def get_modifiable_params(cls):
-        return ["intensity", "phase", "static_value", "None"]
+        return ["intensity", "phase", "steady_value", "None"]
 
-    def create_internal(self, intensity, reverse, smooth, loop, phase, static_value, **kwargs):
+    def create_internal(self, intensity, reverse, smooth, loop, phase, steady_value, **kwargs):
         # Create the Horizontal preset object with the provided parameters
         preset = Presets.Horizontal(
             intensity=intensity,
@@ -222,7 +222,7 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
             smooth=smooth,
             loop=loop,
             phase=phase,
-            static=static_value,
+            steady=steady_value,
         )
         return (preset,)
     
