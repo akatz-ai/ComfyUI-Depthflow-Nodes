@@ -1,6 +1,6 @@
 # 🌊 Depthflow Node Pack for ComfyUI 🌊
 
-**Turn your 2D images into stunning 2.5D parallax animations using Depthflow in ComfyUI.**
+**Turn your 2D images into stunning 2.5D parallax animations using Depthflow in ComfyUI. An open source Immersity alternative.**
 
 🙌 **An implementation of the Depthflow library in ComfyUI originally created by [Tremeschin](https://github.com/Tremeschin)!** 
 - Check out the [Depthflow github page](https://github.com/BrokenSource/DepthFlow)!
