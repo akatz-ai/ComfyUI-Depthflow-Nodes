@@ -6,7 +6,7 @@ class BaseFlex(ABC):
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "strength": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "strength": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01}),
                 "feature_threshold": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "feature_param": (cls.get_modifiable_params(), {"default": cls.get_modifiable_params()[0]}),
                 "feature_mode": (["relative", "absolute"], {"default": "relative"}),

@@ -5,6 +5,16 @@ import numpy as np
 from collections import deque
 from comfy.utils import ProgressBar
 import gc
+import subprocess
+import importlib_metadata
+import sys
+
+expected = "0.7.1"
+version = importlib_metadata.version("depthflow")
+
+if expected != version: 
+    print(f"Depthflow version {version} does not match expected version {expected}")
+    subprocess.run([sys.executable, "-m", "uv", "pip", "install", f"depthflow=={expected}"])
 
 
 class CustomDepthflowScene(DepthScene):
