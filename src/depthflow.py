@@ -100,12 +100,12 @@ class CustomDepthflowScene(DepthScene):
             self.image.from_image(image)
             self.depth.from_image(depth)
 
-        DepthScene.update(self)
-
         # If there are custom animation frames present, use them instead of the normal animation frames
         if self.custom_animation_frames:
             self.animation = [self.custom_animation_frames.popleft()]
-
+            
+        DepthScene.update(self)
+        
         def set_effects_helper(effects):
             for key, value in effects.items():
                 if key in self.state.__fields__:
