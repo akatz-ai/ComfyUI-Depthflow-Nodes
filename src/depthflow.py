@@ -136,8 +136,6 @@ class CustomDepthflowScene(DepthScene):
                     self.depth.repeat(False)
                     self.state.mirror = False
 
-        
-
     @property
     def tau(self) -> float:
         return super().tau * self.animation_speed
