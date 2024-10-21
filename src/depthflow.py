@@ -1,23 +1,46 @@
 import torch
 from DepthFlow import DepthScene
 from Broken.Loaders import LoaderImage
+from ShaderFlow.Texture import ShaderTexture
 import numpy as np
 from collections import deque
 from comfy.utils import ProgressBar
 import gc
 import subprocess
 import sys
+import re
+import os
 try:
     import importlib.metadata as importlib_metadata
 except ImportError:
     import importlib_metadata
 
-expected = "0.7.1"
+# Parse requirements.txt to extract depthflow version
+def extract_depthflow_version():
+    # Get the directory of the current script (depthflow.py)
+    script_dir = os.path.dirname(__file__)
+    # Go up one directory to reach the project root (myapp/)
+    project_root = os.path.dirname(script_dir)
+    # Construct the absolute path to requirements.txt
+    requirements_file = os.path.join(project_root, 'requirements.txt')
+    with open(requirements_file, 'r') as f:
+        for line in f:
+            match = re.match(r'^depthflow==(.*)$', line.strip())
+            if match:
+                return match.group(1)
+    return None  # Return None if depthflow not found
+
+# Extract expected depthflow version from requirements.txt
+expected_version = extract_depthflow_version()
+if expected_version is None:
+    print("Warning: depthflow not found in requirements.txt. Cannot proceed.")
+    sys.exit(1)  # Exit if depthflow version not found
+    
 version = importlib_metadata.version("depthflow")
 
-if expected != version: 
-    print(f"Depthflow version {version} does not match expected version {expected}")
-    subprocess.run([sys.executable, "-m", "uv", "pip", "install", f"depthflow=={expected}"])
+if expected_version != version: 
+    print(f"Depthflow version {version} does not match expected version {expected_version}")
+    subprocess.run([sys.executable, "-m", "pip", "install", f"depthflow=={expected_version}"])
 
 
 class CustomDepthflowScene(DepthScene):
@@ -50,15 +73,25 @@ class CustomDepthflowScene(DepthScene):
         self.num_frames = num_frames
         self.video_time = 0.0
         self.frame_index = 0
+       
+    # TODO: This is a temporary fix to while build gets fixed
+    def build(self):
+        self.image = ShaderTexture(scene=self, name="image").repeat(False)
+        self.depth = ShaderTexture(scene=self, name="depth").repeat(False)
+        self.normal = ShaderTexture(scene=self, name="normal")
+        self.shader.fragment = self.DEPTH_SHADER
+        self.ssaa = 1.2
+        
 
-    def input(self, images, depth_maps):
+    def input(self, image, depth):
         # Store the images and depth maps
-        self.images = images  # Should be numpy arrays of shape [num_frames, H, W, C]
-        self.depth_maps = depth_maps
+        self.images = image  # Should be numpy arrays of shape [num_frames, H, W, C]
+        self.depth_maps = depth
         # For initial setup, use the first frame
-        initial_image = images[0]
-        initial_depth = depth_maps[0]
+        initial_image = image[0]
+        initial_depth = depth[0]
         DepthScene.input(self, initial_image, initial_depth)
+        
 
     def setup(self):
         DepthScene.setup(self)
@@ -317,7 +350,7 @@ class Depthflow:
         height, width = image.shape[1], image.shape[2]
 
         # Input the image and depthmap into the scene
-        scene.input(images=image, depth_maps=depth_map)
+        scene.input(image, depth=depth_map)
 
         scene.custom_animation(motion)
 
