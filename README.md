@@ -16,6 +16,16 @@
     <img src="https://media0.giphy.com/media/JO0JR2MbaBprvzg41M/giphy.gif" alt="Description" width="250"/>
 </div>
 
+## 🖥️ Custom Environment
+I created a custom ComfyUI environment for testing out Depthflow nodes:
+
+**akatzai/comfy-env-depthflow:latest**
+
+Create a new environment and copy and paste the link above into the "Custom Image" field in my Environment Manager tool:
+https://github.com/akatz-ai/ComfyUI-Environment-Manager
+
+Make sure to select the **Basic** environment type to access the included workflow!
+
 ## 📦 What's Included
 
 (For a full breakdown of all nodes and their parameters, [check out the Depthflow Nodes Docs](https://cyber-damselfly-b6c.notion.site/Depthflow-Nodes-11dfd5b1ca3b8007ae9dc0bd0c65690a))
