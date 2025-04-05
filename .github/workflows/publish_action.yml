@@ -12,16 +12,18 @@ on:
     types:
       - closed  # Only trigger when the pull request is closed, which includes when it is merged
 
+permissions:
+  issues: write
 
 jobs:
   publish-node:
     name: Publish Custom Node to registry
     runs-on: ubuntu-latest
-    if: github.event.repository.fork == false && github.event.pull_request.merged == true
+    if: ${{ github.repository_owner == 'akatz-ai' }} && github.event.repository.fork == false && github.event.pull_request.merged == true
     steps:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Publish Custom Node
-        uses: Comfy-Org/publish-node-action@main
+        uses: Comfy-Org/publish-node-action@v1
         with:
           personal_access_token: ${{ secrets.REGISTRY_ACCESS_TOKEN }} ## Add your own personal access token to your Github Repository secrets and reference it here.
