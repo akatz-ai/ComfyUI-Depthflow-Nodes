@@ -1,52 +1,37 @@
 import gc
-import os
 import re
 import subprocess
 import sys
 from collections import deque
+from pathlib import Path
 
 import numpy as np
 import torch
-from Broken.Loaders import LoaderImage
+from broken.core.extra.loaders import LoadImage
 from comfy.utils import ProgressBar
-from DepthFlow import DepthScene
-from ShaderFlow.Texture import ShaderTexture
 
-try:
-    import importlib.metadata as importlib_metadata
-except ImportError:
-    import importlib_metadata
+from depthflow import __version__ as depthflow_version
+from depthflow.scene import DepthScene
 
-# Parse requirements.txt to extract depthflow version
-def extract_depthflow_version():
-    # Get the directory of the current script (depthflow.py)
-    script_dir = os.path.dirname(__file__)
-    # Go up one directory to reach the project root (myapp/)
-    project_root = os.path.dirname(script_dir)
-    # Construct the absolute path to requirements.txt
-    requirements_file = os.path.join(project_root, 'requirements.txt')
-    with open(requirements_file, 'r') as f:
-        for line in f:
-            match = re.match(r'^depthflow==(.*)$', line.strip())
-            if match:
-                return match.group(1)
-    return None  # Return None if depthflow not found
+# Ensure DepthFlow version matches the one in requirements.txt
+for _ in range(1):
+    requirements = (Path(__file__).parent.parent / "requirements.txt").read_text()
 
-# Extract expected depthflow version from requirements.txt
-expected_version = extract_depthflow_version()
-if expected_version is None:
+    if (match := re.search(r"^depthflow==(.*)$", requirements, re.MULTILINE)) is None:
+        continue
+
+    if depthflow_version != (expected := match.group(1)):
+        subprocess.run(
+            (sys.executable, "-m", "uv", "pip", "install", f"depthflow=={expected}")
+        )
+
+    break
+else:
     print("Warning: depthflow not found in requirements.txt. Cannot proceed.")
-    sys.exit(1)  # Exit if depthflow version not found
-
-version = importlib_metadata.version("depthflow")
-
-if expected_version != version:
-    print(f"Depthflow version {version} does not match expected version {expected_version}")
-    subprocess.run([sys.executable, "-m", "pip", "install", f"depthflow=={expected_version}"])
+    sys.exit(1)
 
 
 class CustomDepthflowScene(DepthScene):
-
     def __init__(
         self,
         state=None,
@@ -76,15 +61,6 @@ class CustomDepthflowScene(DepthScene):
         self.video_time = 0.0
         self.frame_index = 0
 
-    # TODO: This is a temporary fix to while build gets fixed
-    def build(self):
-        self.image = ShaderTexture(scene=self, name="image").repeat(False)
-        self.depth = ShaderTexture(scene=self, name="depth").repeat(False)
-        self.normal = ShaderTexture(scene=self, name="normal")
-        self.shader.fragment = self.DEPTH_SHADER
-        self.ssaa = 1.2
-
-
     def input(self, image, depth):
         # Store the images and depth maps
         self.images = image  # Should be numpy arrays of shape [num_frames, H, W, C]
@@ -93,11 +69,6 @@ class CustomDepthflowScene(DepthScene):
         initial_image = image[0]
         initial_depth = depth[0]
         DepthScene.input(self, initial_image, initial_depth)
-
-
-    def setup(self):
-        DepthScene.setup(self)
-        self.time += 0.00001  # prevent division by zero error
 
     def _set_effects(self, effects):
         if effects is None:
@@ -131,8 +102,8 @@ class CustomDepthflowScene(DepthScene):
             current_depth = self.depth_maps[frame_index]
 
             # Convert to appropriate format if necessary
-            image = self.upscaler.upscale(LoaderImage(current_image))
-            depth = LoaderImage(current_depth)
+            image = self.upscaler.upscale(LoadImage(current_image))
+            depth = LoadImage(current_depth)
 
             # Set the current image and depth map
             self.image.from_image(image)
@@ -180,17 +151,7 @@ class CustomDepthflowScene(DepthScene):
 
     def next(self, dt):
         DepthScene.next(self, dt)
-        width, height = self.resolution
-        array = np.frombuffer(self._final.texture.fbo().read(), dtype=np.uint8).reshape(
-            (height, width, 3)
-        )
-
-        array = np.flip(array, axis=0).copy()
-
-        # To Tensor
-        tensor = torch.from_numpy(array)
-
-        del array
+        tensor = torch.from_numpy(self.screenshot())
 
         # Accumulate the frame
         self.frames.append(tensor)
@@ -227,7 +188,7 @@ class Depthflow:
                 "quality": ("INT", {"default": 50, "min": 1, "max": 100, "step": 1}),
                 "ssaa": (
                     "FLOAT",
-                    {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1},
+                    {"default": 1.0, "min": 0.0, "max": 4.0, "step": 0.1},
                 ),
                 "invert": (
                     "FLOAT",

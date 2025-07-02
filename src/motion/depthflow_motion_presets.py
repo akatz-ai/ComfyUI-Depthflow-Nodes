@@ -1,23 +1,26 @@
-from DepthFlow.Motion import Presets
+from depthflow.animation import Animation
 
 from ..base_flex import BaseFlex
 
 
 class DepthflowMotionPreset(BaseFlex):
-
     @classmethod
     def INPUT_TYPES(cls):
         return {
             **super().INPUT_TYPES(),
             "required": {
                 **super().INPUT_TYPES()["required"],
-                "intensity": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01}),
+                "intensity": (
+                    "FLOAT",
+                    {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01},
+                ),
                 "reverse": ("BOOLEAN", {"default": False}),
-            }
+            },
         }
 
     CATEGORY = "🌊 Depthflow/Motion/Presets"
     RETURN_TYPES = ("DEPTHFLOW_MOTION",)
+
 
 class DepthflowMotionPresetCircle(DepthflowMotionPreset):
     @classmethod
@@ -27,14 +30,35 @@ class DepthflowMotionPresetCircle(DepthflowMotionPreset):
             "required": {
                 **super().INPUT_TYPES()["required"],
                 "smooth": ("BOOLEAN", {"default": True}),
-                "phase_x": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
-                "phase_y": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
-                "phase_z": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
-                "amplitude_x": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "amplitude_y": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "amplitude_z": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "static_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
-            }
+                "phase_x": (
+                    "FLOAT",
+                    {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01},
+                ),
+                "phase_y": (
+                    "FLOAT",
+                    {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01},
+                ),
+                "phase_z": (
+                    "FLOAT",
+                    {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01},
+                ),
+                "amplitude_x": (
+                    "FLOAT",
+                    {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+                "amplitude_y": (
+                    "FLOAT",
+                    {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+                "amplitude_z": (
+                    "FLOAT",
+                    {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+                "static_value": (
+                    "FLOAT",
+                    {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+            },
         }
 
     DESCRIPTION = """
@@ -54,11 +78,34 @@ class DepthflowMotionPresetCircle(DepthflowMotionPreset):
 
     @classmethod
     def get_modifiable_params(cls):
-        return ["intensity", "phase_x", "phase_y", "phase_z", "amplitude_x", "amplitude_y", "amplitude_z", "static_value", "None"]
+        return [
+            "intensity",
+            "phase_x",
+            "phase_y",
+            "phase_z",
+            "amplitude_x",
+            "amplitude_y",
+            "amplitude_z",
+            "static_value",
+            "None",
+        ]
 
-    def create_internal(self, intensity, reverse, smooth, phase_x, phase_y, phase_z, amplitude_x, amplitude_y, amplitude_z, static_value, **kwargs):
+    def create_internal(
+        self,
+        intensity,
+        reverse,
+        smooth,
+        phase_x,
+        phase_y,
+        phase_z,
+        amplitude_x,
+        amplitude_y,
+        amplitude_z,
+        static_value,
+        **kwargs,
+    ):
         # Create the Circle preset object with the provided parameters
-        preset = Presets.Circle(
+        preset = Animation.Circle(
             intensity=intensity,
             reverse=reverse,
             smooth=smooth,
@@ -77,9 +124,12 @@ class DepthflowMotionPresetZoom(DepthflowMotionPreset):
             "required": {
                 **super().INPUT_TYPES()["required"],
                 "smooth": ("BOOLEAN", {"default": True}),
-                "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
+                "phase": (
+                    "FLOAT",
+                    {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01},
+                ),
                 "loop": ("BOOLEAN", {"default": False}),
-            }
+            },
         }
 
     DESCRIPTION = """
@@ -98,7 +148,7 @@ class DepthflowMotionPresetZoom(DepthflowMotionPreset):
 
     def create_internal(self, intensity, reverse, smooth, phase, loop, **kwargs):
         # Create the Zoom preset object with the provided parameters
-        preset = Presets.Zoom(
+        preset = Animation.Zoom(
             intensity=intensity,
             reverse=reverse,
             smooth=smooth,
@@ -117,8 +167,11 @@ class DepthflowMotionPresetDolly(DepthflowMotionPreset):
                 **super().INPUT_TYPES()["required"],
                 "smooth": ("BOOLEAN", {"default": True}),
                 "loop": ("BOOLEAN", {"default": True}),
-                "depth": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
-            }
+                "depth": (
+                    "FLOAT",
+                    {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+            },
         }
 
     DESCRIPTION = """
@@ -137,7 +190,7 @@ class DepthflowMotionPresetDolly(DepthflowMotionPreset):
 
     def create_internal(self, intensity, reverse, smooth, loop, depth, **kwargs):
         # Create the Dolly preset object with the provided parameters
-        preset = Presets.Dolly(
+        preset = Animation.Dolly(
             intensity=intensity,
             reverse=reverse,
             smooth=smooth,
@@ -156,9 +209,15 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
                 **super().INPUT_TYPES()["required"],
                 "loop": ("BOOLEAN", {"default": True}),
                 "smooth": ("BOOLEAN", {"default": True}),
-                "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
-                "steady_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
-            }
+                "phase": (
+                    "FLOAT",
+                    {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01},
+                ),
+                "steady_value": (
+                    "FLOAT",
+                    {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+            },
         }
 
     DESCRIPTION = """
@@ -175,9 +234,11 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
     def get_modifiable_params(cls):
         return ["intensity", "phase", "steady_value", "None"]
 
-    def create_internal(self, intensity, reverse, smooth, loop, phase, steady_value, **kwargs):
+    def create_internal(
+        self, intensity, reverse, smooth, loop, phase, steady_value, **kwargs
+    ):
         # Create the Vertical preset object with the provided parameters
-        preset = Presets.Vertical(
+        preset = Animation.Vertical(
             intensity=intensity,
             reverse=reverse,
             smooth=smooth,
@@ -197,9 +258,15 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
                 **super().INPUT_TYPES()["required"],
                 "loop": ("BOOLEAN", {"default": True}),
                 "smooth": ("BOOLEAN", {"default": True}),
-                "phase": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01}),
-                "steady_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
-            }
+                "phase": (
+                    "FLOAT",
+                    {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.01},
+                ),
+                "steady_value": (
+                    "FLOAT",
+                    {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+            },
         }
 
     DESCRIPTION = """
@@ -216,9 +283,11 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
     def get_modifiable_params(cls):
         return ["intensity", "phase", "steady_value", "None"]
 
-    def create_internal(self, intensity, reverse, smooth, loop, phase, steady_value, **kwargs):
+    def create_internal(
+        self, intensity, reverse, smooth, loop, phase, steady_value, **kwargs
+    ):
         # Create the Horizontal preset object with the provided parameters
-        preset = Presets.Horizontal(
+        preset = Animation.Horizontal(
             intensity=intensity,
             reverse=reverse,
             smooth=smooth,
@@ -228,6 +297,7 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
         )
         return (preset,)
 
+
 class DepthflowMotionPresetOrbital(DepthflowMotionPreset):
     @classmethod
     def INPUT_TYPES(cls):
@@ -235,8 +305,11 @@ class DepthflowMotionPresetOrbital(DepthflowMotionPreset):
             **super().INPUT_TYPES(),
             "required": {
                 **super().INPUT_TYPES()["required"],
-                "depth": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
-            }
+                "depth": (
+                    "FLOAT",
+                    {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+            },
         }
 
     DESCRIPTION = """
@@ -253,9 +326,5 @@ class DepthflowMotionPresetOrbital(DepthflowMotionPreset):
 
     def create_internal(self, intensity, depth, reverse, **kwargs):
         # Create the Orbital preset object with the provided parameters
-        preset = Presets.Orbital(
-            intensity=intensity,
-            depth=depth,
-            reverse=reverse
-        )
+        preset = Animation.Orbital(intensity=intensity, depth=depth, reverse=reverse)
         return (preset,)

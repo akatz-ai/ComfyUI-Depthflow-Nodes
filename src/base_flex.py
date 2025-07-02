@@ -8,14 +8,21 @@ class BaseFlex(ABC):
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "strength": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01}),
-                "feature_threshold": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "feature_param": (cls.get_modifiable_params(), {"default": cls.get_modifiable_params()[0]}),
+                "strength": (
+                    "FLOAT",
+                    {"default": 1.0, "min": 0.0, "max": 10.0, "step": 0.01},
+                ),
+                "feature_threshold": (
+                    "FLOAT",
+                    {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+                "feature_param": (
+                    cls.get_modifiable_params(),
+                    {"default": cls.get_modifiable_params()[0]},
+                ),
                 "feature_mode": (["relative", "absolute"], {"default": "relative"}),
             },
-            "optional": {
-                "feature": ("FEATURE", {"default": None})
-            }
+            "optional": {"feature": ("FEATURE", {"default": None})},
         }
 
     CATEGORY = "🌊 Depthflow"
@@ -46,12 +53,22 @@ class BaseFlex(ABC):
         else:  # absolute
             return param_value * feature_value * strength
 
-    def apply(self, strength, feature_threshold, feature_param, feature_mode, feature=None, **kwargs):
+    def apply(
+        self,
+        strength,
+        feature_threshold,
+        feature_param,
+        feature_mode,
+        feature=None,
+        **kwargs,
+    ):
         # If feature is not provided, simply return a single preset
         if feature is None:
-            return (self.create(0.0, strength,
-                                        feature_param, feature_mode, feature,
-                                        **kwargs),)
+            return (
+                self.create(
+                    0.0, strength, feature_param, feature_mode, feature, **kwargs
+                ),
+            )
 
         num_frames = feature.frame_count
 
@@ -60,11 +77,11 @@ class BaseFlex(ABC):
         result = []
         for i in range(num_frames):
             feature_value = feature.get_value_at_frame(i)
-            kwargs['frame_index'] = i
+            kwargs["frame_index"] = i
             feature_value = feature_value if feature_value >= feature_threshold else 0.0
-            processed_preset = self.create(feature_value, strength,
-                                                     feature_param, feature_mode, feature,
-                                                     **kwargs)
+            processed_preset = self.create(
+                feature_value, strength, feature_param, feature_mode, feature, **kwargs
+            )
 
             result.append(processed_preset)
             self.update_progress()
@@ -73,14 +90,27 @@ class BaseFlex(ABC):
 
         return (result,)
 
-    def create(self, feature_value: float, strength: float, feature_param: str, feature_mode: str, feature=None, **kwargs):
+    def create(
+        self,
+        feature_value: float,
+        strength: float,
+        feature_param: str,
+        feature_mode: str,
+        feature=None,
+        **kwargs,
+    ):
         # Modulate the selected parameter
         if feature is not None:
             for param_name in self.get_modifiable_params():
                 if param_name in kwargs:
                     if param_name == feature_param:
-                        kwargs[param_name] = self.modulate_param(param_name, kwargs[param_name],
-                                                                 feature_value, strength, feature_mode)
+                        kwargs[param_name] = self.modulate_param(
+                            param_name,
+                            kwargs[param_name],
+                            feature_value,
+                            strength,
+                            feature_mode,
+                        )
 
         motion = self.create_internal(**kwargs)[0]
         return motion
