@@ -1,5 +1,6 @@
-from .depthflow_motion_base import DepthflowMotion, Target
 from DepthFlow.Motion import Components, Preset
+
+from .depthflow_motion_base import DepthflowMotion, Target
 
 TARGETS = [target.name for target in Target]
 
@@ -54,7 +55,7 @@ class DepthflowMotionSine(DepthflowMotion):
 
         preset = SingleAnimationPreset()
         return (preset,)
-      
+
 class DepthflowMotionCosine(DepthflowMotion):
     @classmethod
     def INPUT_TYPES(cls):
@@ -71,7 +72,7 @@ class DepthflowMotionCosine(DepthflowMotion):
                 "cumulative": ("BOOLEAN", {"default": False}),
             },
         }
-        
+
     DESCRIPTION = """
     Depthflow Motion Cosine Node:
     This node applies a cosine wave motion to a specified target parameter.
@@ -106,7 +107,7 @@ class DepthflowMotionCosine(DepthflowMotion):
 
         preset = SingleAnimationPreset()
         return (preset,)
-    
+
 class DepthflowMotionLinear(DepthflowMotion):
     @classmethod
     def INPUT_TYPES(cls):
@@ -124,7 +125,7 @@ class DepthflowMotionLinear(DepthflowMotion):
                 "cumulative": ("BOOLEAN", {"default": False}),
             },
         }
-        
+
     DESCRIPTION = """
     Depthflow Motion Linear Node:
     This node applies a linear motion to a specified target parameter.
@@ -161,7 +162,7 @@ class DepthflowMotionLinear(DepthflowMotion):
 
         preset = SingleAnimationPreset()
         return (preset,)
-    
+
 class DepthflowMotionExponential(DepthflowMotion):
     @classmethod
     def INPUT_TYPES(cls):
@@ -176,7 +177,7 @@ class DepthflowMotionExponential(DepthflowMotion):
                 "cumulative": ("BOOLEAN", {"default": False}),
             },
         }
-        
+
     DESCRIPTION = """
     Depthflow Motion Exponential Node:
     This node applies an exponential motion to a specified target parameter.
@@ -207,7 +208,7 @@ class DepthflowMotionExponential(DepthflowMotion):
 
         preset = SingleAnimationPreset()
         return (preset,)
-    
+
 
 class DepthflowMotionArc(DepthflowMotion):
     @classmethod
@@ -224,9 +225,9 @@ class DepthflowMotionArc(DepthflowMotion):
                 "cumulative": ("BOOLEAN", {"default": False}),
             },
         }
-        
+
     DESCRIPTION = """
-    Depthflow Motion Arc Node: 
+    Depthflow Motion Arc Node:
     This node applies an arc motion to a specified target parameter.
     - target: Parameter to apply the motion to.
     - start: Starting value of the arc motion.
@@ -255,8 +256,8 @@ class DepthflowMotionArc(DepthflowMotion):
 
         preset = SingleAnimationPreset()
         return (preset,)
-    
-    
+
+
 class DepthflowMotionSetTarget(DepthflowMotion):
     @classmethod
     def INPUT_TYPES(cls):

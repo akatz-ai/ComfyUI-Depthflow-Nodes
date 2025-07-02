@@ -1,9 +1,12 @@
 from abc import abstractmethod
-from DepthFlow.Motion import Preset
-from ..base_flex import BaseFlex
-from Broken import BrokenEnum
-from pydantic import Field
 from typing import List
+
+from Broken import BrokenEnum
+from DepthFlow.Motion import Preset
+from pydantic import Field
+
+from ..base_flex import BaseFlex
+
 
 class Target(BrokenEnum):
     Nothing            = "nothing"
@@ -19,7 +22,7 @@ class Target(BrokenEnum):
     OriginY            = "origin_y"
     OffsetX            = "offset_x"
     OffsetY            = "offset_y"
-    
+
 class CombinedPreset(Preset):
     presets: List[Preset] = Field(default_factory=list)
 

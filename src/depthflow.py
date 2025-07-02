@@ -1,15 +1,17 @@
-import torch
-from DepthFlow import DepthScene
-from Broken.Loaders import LoaderImage
-from ShaderFlow.Texture import ShaderTexture
-import numpy as np
-from collections import deque
-from comfy.utils import ProgressBar
 import gc
+import os
+import re
 import subprocess
 import sys
-import re
-import os
+from collections import deque
+
+import numpy as np
+import torch
+from Broken.Loaders import LoaderImage
+from comfy.utils import ProgressBar
+from DepthFlow import DepthScene
+from ShaderFlow.Texture import ShaderTexture
+
 try:
     import importlib.metadata as importlib_metadata
 except ImportError:
@@ -35,10 +37,10 @@ expected_version = extract_depthflow_version()
 if expected_version is None:
     print("Warning: depthflow not found in requirements.txt. Cannot proceed.")
     sys.exit(1)  # Exit if depthflow version not found
-    
+
 version = importlib_metadata.version("depthflow")
 
-if expected_version != version: 
+if expected_version != version:
     print(f"Depthflow version {version} does not match expected version {expected_version}")
     subprocess.run([sys.executable, "-m", "pip", "install", f"depthflow=={expected_version}"])
 
@@ -73,7 +75,7 @@ class CustomDepthflowScene(DepthScene):
         self.num_frames = num_frames
         self.video_time = 0.0
         self.frame_index = 0
-       
+
     # TODO: This is a temporary fix to while build gets fixed
     def build(self):
         self.image = ShaderTexture(scene=self, name="image").repeat(False)
@@ -81,7 +83,7 @@ class CustomDepthflowScene(DepthScene):
         self.normal = ShaderTexture(scene=self, name="normal")
         self.shader.fragment = self.DEPTH_SHADER
         self.ssaa = 1.2
-        
+
 
     def input(self, image, depth):
         # Store the images and depth maps
@@ -91,7 +93,7 @@ class CustomDepthflowScene(DepthScene):
         initial_image = image[0]
         initial_depth = depth[0]
         DepthScene.input(self, initial_image, initial_depth)
-        
+
 
     def setup(self):
         DepthScene.setup(self)
@@ -139,9 +141,9 @@ class CustomDepthflowScene(DepthScene):
         # If there are custom animation frames present, use them instead of the normal animation frames
         if self.custom_animation_frames:
             self.animation = [self.custom_animation_frames.popleft()]
-            
+
         DepthScene.update(self)
-        
+
         def set_effects_helper(effects):
             for key, value in effects.items():
                 if key in self.state.__fields__:
@@ -182,7 +184,7 @@ class CustomDepthflowScene(DepthScene):
         array = np.frombuffer(self._final.texture.fbo().read(), dtype=np.uint8).reshape(
             (height, width, 3)
         )
-        
+
         array = np.flip(array, axis=0).copy()
 
         # To Tensor

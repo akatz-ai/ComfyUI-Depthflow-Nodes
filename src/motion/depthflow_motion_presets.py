@@ -1,8 +1,10 @@
 from DepthFlow.Motion import Presets
+
 from ..base_flex import BaseFlex
 
+
 class DepthflowMotionPreset(BaseFlex):
-    
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -13,7 +15,7 @@ class DepthflowMotionPreset(BaseFlex):
                 "reverse": ("BOOLEAN", {"default": False}),
             }
         }
-    
+
     CATEGORY = "🌊 Depthflow/Motion/Presets"
     RETURN_TYPES = ("DEPTHFLOW_MOTION",)
 
@@ -34,7 +36,7 @@ class DepthflowMotionPresetCircle(DepthflowMotionPreset):
                 "static_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
-        
+
     DESCRIPTION = """
     Depthflow Motion Preset Circle Node:
     This node allows the user to configure the circle motion preset.
@@ -49,7 +51,7 @@ class DepthflowMotionPresetCircle(DepthflowMotionPreset):
     - amplitude_z: Z amplitude of the circle motion
     - static_value: Static value of the circle motion
     """
-        
+
     @classmethod
     def get_modifiable_params(cls):
         return ["intensity", "phase_x", "phase_y", "phase_z", "amplitude_x", "amplitude_y", "amplitude_z", "static_value", "None"]
@@ -65,8 +67,8 @@ class DepthflowMotionPresetCircle(DepthflowMotionPreset):
             static=static_value,
         )
         return (preset,)
-      
-      
+
+
 class DepthflowMotionPresetZoom(DepthflowMotionPreset):
     @classmethod
     def INPUT_TYPES(cls):
@@ -79,7 +81,7 @@ class DepthflowMotionPresetZoom(DepthflowMotionPreset):
                 "loop": ("BOOLEAN", {"default": False}),
             }
         }
-        
+
     DESCRIPTION = """
     Depthflow Motion Preset Zoom Node:
     This node allows the user to configure the zoom motion preset.
@@ -89,7 +91,7 @@ class DepthflowMotionPresetZoom(DepthflowMotionPreset):
     - phase: Phase of the zoom motion
     - loop: Loop the zoom motion
     """
-    
+
     @classmethod
     def get_modifiable_params(cls):
         return ["intensity", "phase", "None"]
@@ -118,7 +120,7 @@ class DepthflowMotionPresetDolly(DepthflowMotionPreset):
                 "depth": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
-        
+
     DESCRIPTION = """
     Depthflow Motion Preset Dolly Node:
     This node allows the user to configure the dolly motion preset.
@@ -128,7 +130,7 @@ class DepthflowMotionPresetDolly(DepthflowMotionPreset):
     - loop: Loop the dolly motion
     - depth: Depth of the dolly motion
     """
-    
+
     @classmethod
     def get_modifiable_params(cls):
         return ["intensity", "depth", "None"]
@@ -158,7 +160,7 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
                 "steady_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
-        
+
     DESCRIPTION = """
     Depthflow Motion Preset Vertical Node:
     This node allows the user to configure the vertical motion preset.
@@ -168,7 +170,7 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
     - loop: Loop the vertical motion
     - steady_value: Static value of the vertical motion
     """
-    
+
     @classmethod
     def get_modifiable_params(cls):
         return ["intensity", "phase", "steady_value", "None"]
@@ -199,7 +201,7 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
                 "steady_value": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
-        
+
     DESCRIPTION = """
     Depthflow Motion Preset Horizontal Node:
     This node allows the user to configure the horizontal motion preset.
@@ -209,7 +211,7 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
     - loop: Loop the horizontal motion
     - steady_value: Static value of the horizontal motion
     """
-    
+
     @classmethod
     def get_modifiable_params(cls):
         return ["intensity", "phase", "steady_value", "None"]
@@ -225,7 +227,7 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
             steady=steady_value,
         )
         return (preset,)
-    
+
 class DepthflowMotionPresetOrbital(DepthflowMotionPreset):
     @classmethod
     def INPUT_TYPES(cls):
@@ -236,7 +238,7 @@ class DepthflowMotionPresetOrbital(DepthflowMotionPreset):
                 "depth": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
-        
+
     DESCRIPTION = """
     Depthflow Motion Preset Orbital Node:
     This node allows the user to configure the orbital motion preset.
@@ -244,7 +246,7 @@ class DepthflowMotionPresetOrbital(DepthflowMotionPreset):
     - depth: Depth of the orbital motion
     - reverse: Reverse the orbital motion
     """
-    
+
     @classmethod
     def get_modifiable_params(cls):
         return ["intensity", "depth", "None"]
@@ -257,4 +259,3 @@ class DepthflowMotionPresetOrbital(DepthflowMotionPreset):
             reverse=reverse
         )
         return (preset,)
-    

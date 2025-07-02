@@ -5,10 +5,24 @@
 @description: Custom nodes for use with Tremeschin's Depthflow library.
 """
 
-from .src.motion.depthflow_motion_components import DepthflowMotionSine, DepthflowMotionCosine, DepthflowMotionLinear, DepthflowMotionExponential, DepthflowMotionArc, DepthflowMotionSetTarget
-from .src.motion.depthflow_motion_presets import DepthflowMotionPresetCircle, DepthflowMotionPresetZoom, DepthflowMotionPresetDolly, DepthflowMotionPresetVertical, DepthflowMotionPresetHorizontal, DepthflowMotionPresetOrbital
 from .src.depthflow import Depthflow
-from .src.effects.depthflow_effects import DepthflowEffectVignette, DepthflowEffectDOF
+from .src.effects.depthflow_effects import DepthflowEffectDOF, DepthflowEffectVignette
+from .src.motion.depthflow_motion_components import (
+    DepthflowMotionArc,
+    DepthflowMotionCosine,
+    DepthflowMotionExponential,
+    DepthflowMotionLinear,
+    DepthflowMotionSetTarget,
+    DepthflowMotionSine,
+)
+from .src.motion.depthflow_motion_presets import (
+    DepthflowMotionPresetCircle,
+    DepthflowMotionPresetDolly,
+    DepthflowMotionPresetHorizontal,
+    DepthflowMotionPresetOrbital,
+    DepthflowMotionPresetVertical,
+    DepthflowMotionPresetZoom,
+)
 
 NODE_CONFIG = {
   "DepthflowMotionPresetCircle": {"class": DepthflowMotionPresetCircle, "name": "🌊 Depthflow Motion Preset Circle"},

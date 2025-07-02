@@ -1,9 +1,11 @@
 from abc import abstractmethod
 from typing import List, Optional
-from ..base_flex import BaseFlex
+
 from pydantic import BaseModel, Field
 
-    
+from ..base_flex import BaseFlex
+
+
 class DepthflowEffects(BaseFlex):
     @classmethod
     def INPUT_TYPES(cls):
@@ -139,7 +141,7 @@ class DepthflowEffectVignette(DepthflowEffects):
             "vignette_decay": kwargs.get("vignette_decay", 0.1),
         })
         return (effects,)
-    
+
 
 class DepthflowEffectDOF(DepthflowEffects):
     @classmethod
@@ -173,7 +175,7 @@ class DepthflowEffectDOF(DepthflowEffects):
     - dof_quality: Quality of the Depth of Field effect
     - dof_directions: Directions of the Depth of Field effect
     """
-    
+
     @classmethod
     def get_modifiable_params(cls):
         """Return a list of parameter names that can be modulated."""
@@ -194,5 +196,5 @@ class DepthflowEffectDOF(DepthflowEffects):
             "dof_directions": kwargs.get("dof_directions", 16),
         })
         return (effects,)
-        
-        
+
+

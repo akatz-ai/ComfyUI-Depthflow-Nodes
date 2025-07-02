@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from comfy.utils import ProgressBar
+
 
 class BaseFlex(ABC):
     @classmethod
@@ -15,10 +17,10 @@ class BaseFlex(ABC):
                 "feature": ("FEATURE", {"default": None})
             }
         }
-        
+
     CATEGORY = "🌊 Depthflow"
     FUNCTION = "apply"
-        
+
     def __init__(self):
         self.progress_bar = None
 
@@ -50,7 +52,7 @@ class BaseFlex(ABC):
             return (self.create(0.0, strength,
                                         feature_param, feature_mode, feature,
                                         **kwargs),)
-        
+
         num_frames = feature.frame_count
 
         self.start_progress(num_frames, desc=f"Applying {self.__class__.__name__}")
@@ -60,7 +62,7 @@ class BaseFlex(ABC):
             feature_value = feature.get_value_at_frame(i)
             kwargs['frame_index'] = i
             feature_value = feature_value if feature_value >= feature_threshold else 0.0
-            processed_preset = self.create(feature_value, strength, 
+            processed_preset = self.create(feature_value, strength,
                                                      feature_param, feature_mode, feature,
                                                      **kwargs)
 
@@ -77,12 +79,12 @@ class BaseFlex(ABC):
             for param_name in self.get_modifiable_params():
                 if param_name in kwargs:
                     if param_name == feature_param:
-                        kwargs[param_name] = self.modulate_param(param_name, kwargs[param_name], 
+                        kwargs[param_name] = self.modulate_param(param_name, kwargs[param_name],
                                                                  feature_value, strength, feature_mode)
-                    
+
         motion = self.create_internal(**kwargs)[0]
         return motion
-    
+
     @abstractmethod
     def create_internal(self, **kwargs):
         """Implemented by subclasses to create the object based on the provided parameters."""
