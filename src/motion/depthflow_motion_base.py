@@ -4,11 +4,12 @@ from typing import List
 from broken import BrokenEnum
 from pydantic import Field
 
-from depthflow.animation import Animation
+from depthflow.animation import Animation, Target as DepthflowTarget
 
 from ..base_flex import BaseFlex
 
 
+# Map old Target names to new Target names from depthflow
 class Target(BrokenEnum):
     Nothing = "nothing"
     Height = "height"
@@ -17,20 +18,25 @@ class Target(BrokenEnum):
     Zoom = "zoom"
     Isometric = "isometric"
     Dolly = "dolly"
-    CenterX = "center_x"
-    CenterY = "center_y"
-    OriginX = "origin_x"
-    OriginY = "origin_y"
-    OffsetX = "offset_x"
-    OffsetY = "offset_y"
+    CenterX = "center-x"  # Changed to match new API
+    CenterY = "center-y"  # Changed to match new API
+    OriginX = "origin-x"  # Changed to match new API
+    OriginY = "origin-y"  # Changed to match new API
+    OffsetX = "offset-x"  # Changed to match new API
+    OffsetY = "offset-y"  # Changed to match new API
+    Invert = "invert"     # Added from new API
+    Mirror = "mirror"     # Added from new API
 
 
-class CombinedPreset(Animation):
-    presets: List[Animation] = Field(default_factory=list)
-
-    def animation(self):
+class CombinedPreset:
+    """Wrapper class to hold multiple animation presets"""
+    def __init__(self, presets=None):
+        self.presets = presets or []
+        
+    def apply(self, scene):
+        """Apply all presets to the scene"""
         for preset in self.presets:
-            yield from preset.animation()
+            preset.apply(scene)
 
 
 class DepthflowMotion(BaseFlex):
@@ -186,11 +192,11 @@ class DepthflowMotion(BaseFlex):
         # Combine with incoming motion
         if motion is None:
             combined_preset = current_preset
-        elif isinstance(motion, Animation):
+        elif hasattr(motion, 'apply'):  # Check if it's an Animation object
             combined_preset = CombinedPreset(presets=[motion, current_preset])
         elif isinstance(motion, CombinedPreset):
             combined_preset = CombinedPreset(presets=motion.presets + [current_preset])
         else:
-            raise ValueError("'motion' should be a Preset or CombinedPreset")
+            raise ValueError("'motion' should be an Animation or CombinedPreset")
 
         return combined_preset

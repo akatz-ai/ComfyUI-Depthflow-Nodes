@@ -1,34 +1,13 @@
 import gc
-import re
-import subprocess
-import sys
 from collections import deque
-from pathlib import Path
 
 import numpy as np
 import torch
 from broken.core.extra.loaders import LoadImage
 from comfy.utils import ProgressBar
 
-from depthflow import __version__ as depthflow_version
 from depthflow.scene import DepthScene
-
-# Ensure DepthFlow version matches the one in requirements.txt
-for _ in range(1):
-    requirements = (Path(__file__).parent.parent / "requirements.txt").read_text()
-
-    if (match := re.search(r"^depthflow==(.*)$", requirements, re.MULTILINE)) is None:
-        continue
-
-    if depthflow_version != (expected := match.group(1)):
-        subprocess.run(
-            (sys.executable, "-m", "uv", "pip", "install", f"depthflow=={expected}")
-        )
-
-    break
-else:
-    print("Warning: depthflow not found in requirements.txt. Cannot proceed.")
-    sys.exit(1)
+from depthflow.animation import DepthAnimation
 
 
 class CustomDepthflowScene(DepthScene):
@@ -60,6 +39,8 @@ class CustomDepthflowScene(DepthScene):
         self.num_frames = num_frames
         self.video_time = 0.0
         self.frame_index = 0
+        # Initialize animation with empty DepthAnimation
+        self.config.animation = DepthAnimation()
 
     def input(self, image, depth):
         # Store the images and depth maps
@@ -69,6 +50,31 @@ class CustomDepthflowScene(DepthScene):
         initial_image = image[0]
         initial_depth = depth[0]
         DepthScene.input(self, initial_image, initial_depth)
+        
+    def _load_inputs(self, echo: bool=True) -> None:
+        """Load inputs: single or batch exporting"""
+
+        # Batch exporting implementation
+        image = self._get_batch_input(self.config.image)
+        depth = self._get_batch_input(self.config.depth)
+
+        if (image is None):
+            self.log_info("DEBUG: image is None")
+            return
+            # raise super().ShaderBatchStop()
+
+        # self.log_info(f"Loading image: {image}", echo=echo)
+        # self.log_info(f"Loading depth: {depth or 'Estimating from image'}", echo=echo)
+
+        # Load, estimate, upscale input image
+        image = self.config.upscaler.upscale(LoadImage(image))
+        depth = LoadImage(depth) or self.config.estimator.estimate(image)
+
+        # Match rendering resolution to image
+        self.resolution   = (image.width,image.height)
+        self.aspect_ratio = (image.width/image.height)
+        self.image.from_image(image)
+        self.depth.from_image(depth)
 
     def _set_effects(self, effects):
         if effects is None:
@@ -81,12 +87,15 @@ class CustomDepthflowScene(DepthScene):
             self.effects = effects
 
     def custom_animation(self, motion):
-        # check if motion is a list, otherwise add it directly with add_animation
+        # check if motion is a list, otherwise add it directly with config.animation.add
         if isinstance(motion, list):
             for m in motion:
                 self.custom_animation_frames.append(m)
+        elif hasattr(motion, 'presets'):  # CombinedPreset
+            for preset in motion.presets:
+                self.config.animation.add(preset)
         else:
-            self.add_animation(motion)
+            self.config.animation.add(motion)
 
     def update(self):
         frame_duration = 1.0 / self.input_fps
@@ -102,7 +111,7 @@ class CustomDepthflowScene(DepthScene):
             current_depth = self.depth_maps[frame_index]
 
             # Convert to appropriate format if necessary
-            image = self.upscaler.upscale(LoadImage(current_image))
+            image = LoadImage(current_image) #self.upscayl(LoadImage(current_image))
             depth = LoadImage(current_depth)
 
             # Set the current image and depth map
@@ -111,13 +120,40 @@ class CustomDepthflowScene(DepthScene):
 
         # If there are custom animation frames present, use them instead of the normal animation frames
         if self.custom_animation_frames:
-            self.animation = [self.custom_animation_frames.popleft()]
+            # Clear current animation and add the new frame
+            self.config.animation.clear()
+            frame = self.custom_animation_frames.popleft()
+            if hasattr(frame, 'presets'):  # CombinedPreset
+                for preset in frame.presets:
+                    self.config.animation.add(preset)
+            else:
+                self.config.animation.add(frame)
 
         DepthScene.update(self)
 
         def set_effects_helper(effects):
+            # Map old effect keys to new state structure
+            effect_mapping = {
+                # Vignette
+                'vignette_enable': ('vignette', 'enable'),
+                'vignette_intensity': ('vignette', 'intensity'),
+                'vignette_decay': ('vignette', 'decay'),
+                # DOF (Blur)
+                'dof_enable': ('blur', 'enable'),
+                'dof_start': ('blur', 'start'),
+                'dof_end': ('blur', 'end'),
+                'dof_exponent': ('blur', 'exponent'),
+                'dof_intensity': ('blur', 'intensity'),
+                'dof_quality': ('blur', 'quality'),
+                'dof_directions': ('blur', 'directions'),
+            }
+            
             for key, value in effects.items():
-                if key in self.state.__fields__:
+                if key in effect_mapping:
+                    state_obj, attr = effect_mapping[key]
+                    if hasattr(self.state, state_obj):
+                        setattr(getattr(self.state, state_obj), attr, value)
+                elif hasattr(self.state, key):
                     setattr(self.state, key, value)
 
         if self.effects:
@@ -151,7 +187,7 @@ class CustomDepthflowScene(DepthScene):
 
     def next(self, dt):
         DepthScene.next(self, dt)
-        tensor = torch.from_numpy(self.screenshot())
+        tensor = torch.from_numpy(self.screenshot().copy())
 
         # Accumulate the frame
         self.frames.append(tensor)
@@ -313,7 +349,22 @@ class Depthflow:
         height, width = image.shape[1], image.shape[2]
 
         # Input the image and depthmap into the scene
+        # Store the image and depth sequences in the scene for frame-by-frame processing
+        print(f"DEBUG: depth_map shape: {depth_map.shape}, dtype: {depth_map.dtype}")
+        print(f"DEBUG: image shape: {image.shape}, dtype: {image.dtype}")
+        
+        # Store the arrays in the scene for update() to use
+        # scene.images = image
+        # scene.depth_maps = depth_map
+        
+        # Don't call scene.input or set config.image/depth directly
+        # The scene's update() method will handle loading frames dynamically
+        # This avoids the boolean evaluation issue in depthflow's _load_inputs
         scene.input(image, depth=depth_map)
+        
+        # Instead, we'll set up the scene resolution based on the input
+        # scene.resolution = (width, height)
+        # scene.aspect_ratio = width / height
 
         scene.custom_animation(motion)
 

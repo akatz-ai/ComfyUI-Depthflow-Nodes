@@ -8,12 +8,11 @@
 from .src.depthflow import Depthflow
 from .src.effects.depthflow_effects import DepthflowEffectDOF, DepthflowEffectVignette
 from .src.motion.depthflow_motion_components import (
-    DepthflowMotionArc,
     DepthflowMotionCosine,
-    DepthflowMotionExponential,
     DepthflowMotionLinear,
     DepthflowMotionSetTarget,
     DepthflowMotionSine,
+    DepthflowMotionTriangle,
 )
 from .src.motion.depthflow_motion_presets import (
     DepthflowMotionPresetCircle,
@@ -70,13 +69,9 @@ NODE_CONFIG = {
         "class": DepthflowMotionLinear,
         "name": "🌊 Depthflow Motion Linear",
     },
-    "DepthflowMotionExponential": {
-        "class": DepthflowMotionExponential,
-        "name": "🌊 Depthflow Motion Exponential",
-    },
-    "DepthflowMotionArc": {
-        "class": DepthflowMotionArc,
-        "name": "🌊 Depthflow Motion Arc",
+    "DepthflowMotionTriangle": {
+        "class": DepthflowMotionTriangle,
+        "name": "🌊 Depthflow Motion Triangle",
     },
     "DepthflowMotionSetTarget": {
         "class": DepthflowMotionSetTarget,

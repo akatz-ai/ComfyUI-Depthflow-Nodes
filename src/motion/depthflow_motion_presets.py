@@ -108,10 +108,10 @@ class DepthflowMotionPresetCircle(DepthflowMotionPreset):
         preset = Animation.Circle(
             intensity=intensity,
             reverse=reverse,
-            smooth=smooth,
             phase=(phase_x, phase_y, phase_z),
             amplitude=(amplitude_x, amplitude_y, amplitude_z),
-            static=static_value,
+            steady=static_value,
+            isometric=0.6,  # Default value from new API
         )
         return (preset,)
 
@@ -154,6 +154,7 @@ class DepthflowMotionPresetZoom(DepthflowMotionPreset):
             smooth=smooth,
             phase=phase,
             loop=loop,
+            isometric=0.8,  # Default value from new API
         )
         return (preset,)
 
@@ -195,7 +196,8 @@ class DepthflowMotionPresetDolly(DepthflowMotionPreset):
             reverse=reverse,
             smooth=smooth,
             loop=loop,
-            depth=depth,
+            focus=depth,  # Changed from 'depth' to 'focus' in new API
+            phase=0.0,  # Default value from new API
         )
         return (preset,)
 
@@ -245,6 +247,7 @@ class DepthflowMotionPresetVertical(DepthflowMotionPreset):
             loop=loop,
             phase=phase,
             steady=steady_value,
+            isometric=0.6,  # Default value from new API
         )
         return (preset,)
 
@@ -294,6 +297,7 @@ class DepthflowMotionPresetHorizontal(DepthflowMotionPreset):
             loop=loop,
             phase=phase,
             steady=steady_value,
+            isometric=0.6,  # Default value from new API
         )
         return (preset,)
 
@@ -326,5 +330,10 @@ class DepthflowMotionPresetOrbital(DepthflowMotionPreset):
 
     def create_internal(self, intensity, depth, reverse, **kwargs):
         # Create the Orbital preset object with the provided parameters
-        preset = Animation.Orbital(intensity=intensity, depth=depth, reverse=reverse)
+        preset = Animation.Orbital(
+            intensity=intensity, 
+            steady=depth,  # Changed from 'depth' to 'steady' in new API
+            reverse=reverse,
+            zoom=0.98,  # Default value from new API
+        )
         return (preset,)
