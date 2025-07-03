@@ -8,6 +8,7 @@
 from .src.depthflow import Depthflow
 from .src.effects.depthflow_effects import DepthflowEffectDOF, DepthflowEffectVignette
 from .src.motion.depthflow_motion_components import (
+    DepthflowMotionArc,
     DepthflowMotionCosine,
     DepthflowMotionLinear,
     DepthflowMotionSetTarget,
@@ -76,6 +77,10 @@ NODE_CONFIG = {
     "DepthflowMotionSetTarget": {
         "class": DepthflowMotionSetTarget,
         "name": "🌊 Depthflow Motion Set Target",
+    },
+    "DepthflowMotionArc": {
+        "class": DepthflowMotionArc,
+        "name": "🌊 Depthflow Motion Arc",
     },
 }
 

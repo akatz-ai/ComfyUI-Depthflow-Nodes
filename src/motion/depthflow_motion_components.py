@@ -1,4 +1,5 @@
-from depthflow.animation import Animation
+from pydantic import Field
+from depthflow.animation import Animation, ComponentBase
 
 from .depthflow_motion_base import DepthflowMotion, Target
 
@@ -293,3 +294,84 @@ class DepthflowMotionSetTarget(DepthflowMotion):
                 value=value,
             ),
         )
+
+
+class DepthflowMotionArc(DepthflowMotion):
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            **super().INPUT_TYPES(),
+            "required": {
+                **super().INPUT_TYPES()["required"],
+                "target": (TARGETS, {"default": TARGETS[0]}),
+                "start": (
+                    "FLOAT",
+                    {"default": 0.0, "min": -9999.0, "max": 9999.0, "step": 0.01},
+                ),
+                "middle": (
+                    "FLOAT",
+                    {"default": 0.0, "min": -9999.0, "max": 9999.0, "step": 0.01},
+                ),
+                "end": (
+                    "FLOAT",
+                    {"default": 0.0, "min": -9999.0, "max": 9999.0, "step": 0.01},
+                ),
+                "reverse": ("BOOLEAN", {"default": False}),
+                "cumulative": ("BOOLEAN", {"default": False}),
+            },
+        }
+
+    DESCRIPTION = """
+    Depthflow Motion Arc Node:
+    This node applies an arc motion to a specified target parameter.
+    - target: Parameter to apply the motion to.
+    - start: Starting value of the arc motion.
+    - middle: Middle value of the arc motion.
+    - end: Ending value of the arc motion.
+    - reverse: Reverse the time direction.
+    - cumulative: Whether to add to the previous frame's value.
+    """
+
+    @classmethod
+    def get_modifiable_params(cls):
+        return ["start", "middle", "end", "None"]
+
+    def create_internal(
+        self, target, start, middle, end, reverse, cumulative, **kwargs
+    ):
+        # Create a custom Arc animation component
+        class Arc(ComponentBase):
+            start_val: float = Field(default=0.0)
+            middle_val: float = Field(default=0.0)
+            end_val: float = Field(default=0.0)
+            reverse: bool = Field(default=False)
+            
+            def compute(self, scene, tau, cycle):
+                # Note: tau and cycle are already processed by get_time() in the base class
+                # when apply() calls compute(), so reverse is already handled
+                
+                # Use quadratic Bézier curve for smooth arc motion
+                # To make the curve pass through all 3 points, we need to calculate the control point
+                # For a quadratic Bézier to pass through (0,start), (0.5,middle), (1,end):
+                # The control point P1 = 2*middle - 0.5*(start + end)
+                control_point = 2.0 * self.middle_val - 0.5 * (self.start_val + self.end_val)
+                
+                # Quadratic Bézier formula: B(t) = (1-t)²*P0 + 2*(1-t)*t*P1 + t²*P2
+                # where P0 = start, P1 = control_point, P2 = end
+                t = tau
+                one_minus_t = 1.0 - t
+                
+                return (one_minus_t * one_minus_t * self.start_val + 
+                        2.0 * one_minus_t * t * control_point + 
+                        t * t * self.end_val)
+        
+        arc_component = Arc(
+            target=Target[target].value,
+            start_val=start,
+            middle_val=middle,
+            end_val=end,
+            reverse=reverse,
+            cumulative=cumulative
+        )
+        
+        return (arc_component,)
