@@ -1,9 +1,13 @@
 [project]
 name = "comfyui-depthflow-nodes"
 description = "Implementation of DepthFlow nodes for ComfyUI, adds a 2.5D parallax effect to images and videos. Compatible with Ryan's Flex system."
-version = "1.0.5"
+version = "1.1.0"
 license = {file = "LICENSE"}
-dependencies = ["numpy", "pydantic", "depthflow==0.8.0.dev0"]
+dependencies = [
+    "depthflow==0.9.1",
+    "pydantic",
+    "numpy"
+]
 
 [project.urls]
 Repository = "https://github.com/akatz-ai/ComfyUI-Depthflow-Nodes"
@@ -13,3 +17,6 @@ Repository = "https://github.com/akatz-ai/ComfyUI-Depthflow-Nodes"
 PublisherId = "akatz"
 DisplayName = "ComfyUI-Depthflow-Nodes"
 Icon = "https://i.imgur.com/aiqQI7U.png"
+
+[tool.ruff.format]
+exclude = ["*"]
