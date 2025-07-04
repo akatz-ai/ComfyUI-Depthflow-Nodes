@@ -4,3 +4,5 @@
 .directory
 src/__pycache__/
 **/__pycache__/**
+*context.md
+uv.lock

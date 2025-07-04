@@ -6,7 +6,7 @@
 """
 
 from .src.depthflow import Depthflow
-from .src.effects.depthflow_effects import DepthflowEffectDOF, DepthflowEffectVignette
+from .src.effects.depthflow_effects import DepthflowEffectDOF, DepthflowEffectVignette, DepthflowEffectInpaint, DepthflowEffectColor
 from .src.motion.depthflow_motion_components import (
     DepthflowMotionArc,
     DepthflowMotionCosine,
@@ -57,6 +57,14 @@ NODE_CONFIG = {
     "DepthflowEffectDOF": {
         "class": DepthflowEffectDOF,
         "name": "🌊 Depthflow Effect DOF",
+    },
+    "DepthflowEffectInpaint": {
+        "class": DepthflowEffectInpaint,
+        "name": "🌊 Depthflow Effect Inpaint",
+    },
+    "DepthflowEffectColor": {
+        "class": DepthflowEffectColor,
+        "name": "🌊 Depthflow Effect Color",
     },
     "DepthflowMotionSine": {
         "class": DepthflowMotionSine,
