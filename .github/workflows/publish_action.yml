@@ -6,11 +6,6 @@ on:
       - main
     paths:
       - "pyproject.toml"
-  pull_request:
-    branches:
-      - main
-    types:
-      - closed  # Only trigger when the pull request is closed, which includes when it is merged
 
 permissions:
   issues: write

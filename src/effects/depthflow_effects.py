@@ -289,3 +289,126 @@ class DepthflowEffectDOF(DepthflowEffects):
             }
         )
         return (effects,)
+
+
+class DepthflowEffectInpaint(DepthflowEffects):
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            **super().INPUT_TYPES(),
+            "required": {
+                **super().INPUT_TYPES()["required"],
+                "inpaint_enable": ("BOOLEAN", {"default": True}),
+                "inpaint_black": ("BOOLEAN", {"default": False}),
+                "inpaint_limit": (
+                    "FLOAT",
+                    {"default": 1.0, "min": 0.0, "max": 20.0, "step": 0.1},
+                ),
+            },
+        }
+
+    DESCRIPTION = """
+    Depthflow Inpaint Effect Node:
+    This node applies an inpainting effect to mask stretchy regions for advanced usage.
+    - inpaint_enable: Enable the inpainting effect.
+    - inpaint_black: Replace non-steep regions with black color instead of the base image.
+    - inpaint_limit: The threshold for the steepness of the regions (heuristic).
+    """
+
+    @classmethod
+    def get_modifiable_params(cls):
+        """Return a list of parameter names that can be modulated."""
+        return ["inpaint_limit", "None"]
+
+    def create_internal(self, effects, **kwargs):
+        """
+        Apply the Inpaint effect to the incoming DepthState.
+        """
+        # Update with Inpaint parameters
+        effects.update(
+            {
+                "inpaint_enable": kwargs.get("inpaint_enable", True),
+                "inpaint_black": kwargs.get("inpaint_black", False),
+                "inpaint_limit": kwargs.get("inpaint_limit", 1.0),
+            }
+        )
+        return (effects,)
+
+
+class DepthflowEffectColor(DepthflowEffects):
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            **super().INPUT_TYPES(),
+            "required": {
+                **super().INPUT_TYPES()["required"],
+                "color_enable": ("BOOLEAN", {"default": True}),
+                "color_saturation": (
+                    "FLOAT",
+                    {"default": 100.0, "min": 0.0, "max": 200.0, "step": 1.0},
+                ),
+                "color_contrast": (
+                    "FLOAT",
+                    {"default": 100.0, "min": 0.0, "max": 200.0, "step": 1.0},
+                ),
+                "color_brightness": (
+                    "FLOAT",
+                    {"default": 100.0, "min": 0.0, "max": 200.0, "step": 1.0},
+                ),
+                "color_gamma": (
+                    "FLOAT",
+                    {"default": 100.0, "min": 0.0, "max": 400.0, "step": 1.0},
+                ),
+                "color_grayscale": (
+                    "FLOAT",
+                    {"default": 0.0, "min": 0.0, "max": 100.0, "step": 1.0},
+                ),
+                "color_sepia": (
+                    "FLOAT",
+                    {"default": 0.0, "min": 0.0, "max": 100.0, "step": 1.0},
+                ),
+            },
+        }
+
+    DESCRIPTION = """
+    Depthflow Color Effect Node:
+    This node applies color manipulation effects to the depth flow.
+    - color_enable: Enable color manipulation effects.
+    - color_saturation: Saturation of the image (0 is grayscale, 100 is original).
+    - color_contrast: Contrast of the image (0 is full gray, 100 is original).
+    - color_brightness: Brightness of the image (0 is black, 100 is original).
+    - color_gamma: Gamma of the image (0 is black, 100 is original).
+    - color_grayscale: Grayscale effect (0 is full color, 100 is grayscale).
+    - color_sepia: Sepia effect (0 is grayscale, 100 is full sepia).
+    """
+
+    @classmethod
+    def get_modifiable_params(cls):
+        """Return a list of parameter names that can be modulated."""
+        return [
+            "color_saturation",
+            "color_contrast",
+            "color_brightness",
+            "color_gamma",
+            "color_grayscale",
+            "color_sepia",
+            "None",
+        ]
+
+    def create_internal(self, effects, **kwargs):
+        """
+        Apply the Color effect to the incoming DepthState.
+        """
+        # Update with Color parameters
+        effects.update(
+            {
+                "color_enable": kwargs.get("color_enable", True),
+                "color_saturation": kwargs.get("color_saturation", 100.0),
+                "color_contrast": kwargs.get("color_contrast", 100.0),
+                "color_brightness": kwargs.get("color_brightness", 100.0),
+                "color_gamma": kwargs.get("color_gamma", 100.0),
+                "color_grayscale": kwargs.get("color_grayscale", 0.0),
+                "color_sepia": kwargs.get("color_sepia", 0.0),
+            }
+        )
+        return (effects,)

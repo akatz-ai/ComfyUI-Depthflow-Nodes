@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-depthflow-nodes"
 description = "Implementation of DepthFlow nodes for ComfyUI, adds a 2.5D parallax effect to images and videos. Compatible with Ryan's Flex system."
-version = "1.1.0"
+version = "1.1.1"
 license = {file = "LICENSE"}
 dependencies = [
     "depthflow==0.9.1",

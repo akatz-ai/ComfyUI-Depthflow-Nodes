@@ -146,6 +146,18 @@ class CustomDepthflowScene(DepthScene):
                 'dof_intensity': ('blur', 'intensity'),
                 'dof_quality': ('blur', 'quality'),
                 'dof_directions': ('blur', 'directions'),
+                # Inpaint
+                'inpaint_enable': ('inpaint', 'enable'),
+                'inpaint_black': ('inpaint', 'black'),
+                'inpaint_limit': ('inpaint', 'limit'),
+                # Colors
+                'color_enable': ('colors', 'enable'),
+                'color_saturation': ('colors', 'saturation'),
+                'color_contrast': ('colors', 'contrast'),
+                'color_brightness': ('colors', 'brightness'),
+                'color_gamma': ('colors', 'gamma'),
+                'color_grayscale': ('colors', 'grayscale'),
+                'color_sepia': ('colors', 'sepia'),
             }
             
             for key, value in effects.items():
