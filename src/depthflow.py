@@ -1,6 +1,8 @@
 import gc
 from collections import deque
+import copy
 
+import cv2
 import numpy as np
 import torch
 from broken.core.extra.loaders import LoadImage
@@ -243,6 +245,7 @@ class Depthflow:
                     {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01},
                 ),
                 "tiling_mode": (["mirror", "repeat", "none"], {"default": "mirror"}),
+                "edge_fix": ("INT", {"default": 5, "min": 0, "max": 50, "step": 1}),
             },
             "optional": {
                 "effects": ("DEPTHFLOW_EFFECTS",),  # DepthState object
@@ -297,6 +300,7 @@ class Depthflow:
         ssaa,
         invert,
         tiling_mode,
+        edge_fix,
         effects=None,
     ):
         # Create the scene
@@ -337,6 +341,36 @@ class Depthflow:
             image = (image * 255).astype(np.uint8)
         if depth_map.dtype != np.uint8:
             depth_map = (depth_map * 255).astype(np.uint8)
+
+        # Apply edge fix (dilation) to depth maps if edge_fix > 0
+        if edge_fix > 0:
+            # Create circular kernel for dilation
+            kernel_size = edge_fix * 2 + 1
+            kernel = np.zeros((kernel_size, kernel_size), np.uint8)
+            kernel = cv2.circle(kernel, (edge_fix, edge_fix), edge_fix, 1, -1)
+            
+            # Apply dilation to each depth map frame
+            dilated_depth_maps = []
+            for i in range(depth_map.shape[0]):
+                # Get the current depth map frame
+                current_depth = depth_map[i]
+                
+                # If depth map has multiple channels, process each channel
+                if current_depth.shape[2] > 1:
+                    channels = []
+                    for c in range(current_depth.shape[2]):
+                        dilated_channel = cv2.dilate(current_depth[:, :, c], kernel, iterations=1)
+                        channels.append(dilated_channel)
+                    dilated_frame = np.stack(channels, axis=2)
+                else:
+                    # Single channel depth map
+                    dilated_frame = cv2.dilate(current_depth[:, :, 0], kernel, iterations=1)
+                    dilated_frame = np.expand_dims(dilated_frame, axis=2)
+                
+                dilated_depth_maps.append(dilated_frame)
+            
+            # Convert back to numpy array
+            depth_map = np.array(dilated_depth_maps)
 
         # Determine the number of frames
         num_image_frames = image.shape[0]
