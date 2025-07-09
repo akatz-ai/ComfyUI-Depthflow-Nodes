@@ -50,7 +50,6 @@ class CustomDepthflowScene(DepthScene):
         # Initialize animation with empty DepthAnimation
         self.config.animation = DepthAnimation()
         self.state.inpaint = CustomInpaintState()
-        # self.shader.fragment = DEPTH_SHADER
         
     def build(self):
         DepthScene.build(self)

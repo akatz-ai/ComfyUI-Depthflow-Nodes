@@ -1,0 +1,1 @@
+- Use the gh cli tool for all github related tasks
