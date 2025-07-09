@@ -1,6 +1,7 @@
 from abc import abstractmethod
 
 from ..base_flex import BaseFlex
+from ..utils.color_utils import parse_color_string
 
 
 class DepthflowEffects(BaseFlex):
@@ -304,6 +305,14 @@ class DepthflowEffectInpaint(DepthflowEffects):
                     "FLOAT",
                     {"default": 1.0, "min": 0.0, "max": 20.0, "step": 0.1},
                 ),
+                "inpaint_color": (
+                    "STRING",
+                    {
+                        "default": "#00FF00",
+                        "multiline": False,
+                        "placeholder": "#RRGGBB or R,G,B,A (0-255)"
+                    },
+                ),
             },
         }
 
@@ -313,6 +322,7 @@ class DepthflowEffectInpaint(DepthflowEffects):
     - inpaint_enable: Enable the inpainting effect.
     - inpaint_black: Replace non-steep regions with black color instead of the base image.
     - inpaint_limit: The threshold for the steepness of the regions (heuristic).
+    - inpaint_color: Color string in HEX (#RRGGBB, #RRGGBBAA) or RGB (R,G,B or R,G,B,A with values 0-255) format.
     """
 
     @classmethod
@@ -324,12 +334,25 @@ class DepthflowEffectInpaint(DepthflowEffects):
         """
         Apply the Inpaint effect to the incoming DepthState.
         """
+        # Parse color string to RGBA values
+        color_str = kwargs.get("inpaint_color", "#00FF00")
+        try:
+            r, g, b, a = parse_color_string(color_str)
+        except ValueError as e:
+            # Fall back to default green if parsing fails
+            print(f"Warning: Failed to parse color '{color_str}': {e}. Using default green.")
+            r, g, b, a = 0.0, 1.0, 0.0, 1.0
+        
         # Update with Inpaint parameters
         effects.update(
             {
                 "inpaint_enable": kwargs.get("inpaint_enable", True),
                 "inpaint_black": kwargs.get("inpaint_black", False),
                 "inpaint_limit": kwargs.get("inpaint_limit", 1.0),
+                "inpaint_color_r": r,
+                "inpaint_color_g": g,
+                "inpaint_color_b": b,
+                "inpaint_color_a": a,
             }
         )
         return (effects,)

@@ -1,6 +1,7 @@
 import gc
 from collections import deque
 import copy
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -10,6 +11,11 @@ from comfy.utils import ProgressBar
 
 from depthflow.scene import DepthScene
 from depthflow.animation import DepthAnimation
+from depthflow.state import DepthState
+
+from .custom_state import CustomInpaintState
+
+DEPTH_SHADER = Path(__file__).parent / "shaders" / "depthflow.glsl"
 
 
 class CustomDepthflowScene(DepthScene):
@@ -43,8 +49,15 @@ class CustomDepthflowScene(DepthScene):
         self.frame_index = 0
         # Initialize animation with empty DepthAnimation
         self.config.animation = DepthAnimation()
+        self.state.inpaint = CustomInpaintState()
+        
+    def build(self):
+        DepthScene.build(self)
+        self.shader.fragment = DEPTH_SHADER
 
     def input(self, image, depth):
+        # TODO: maybe put this somewhere else?
+        # self.shader.fragment = DEPTH_SHADER
         # Store the images and depth maps
         self.images = image  # Should be numpy arrays of shape [num_frames, H, W, C]
         self.depth_maps = depth
@@ -152,6 +165,10 @@ class CustomDepthflowScene(DepthScene):
                 'inpaint_enable': ('inpaint', 'enable'),
                 'inpaint_black': ('inpaint', 'black'),
                 'inpaint_limit': ('inpaint', 'limit'),
+                'inpaint_color_r': ('inpaint', 'color_r'),
+                'inpaint_color_g': ('inpaint', 'color_g'),
+                'inpaint_color_b': ('inpaint', 'color_b'),
+                'inpaint_color_a': ('inpaint', 'color_a'),
                 # Colors
                 'color_enable': ('colors', 'enable'),
                 'color_saturation': ('colors', 'saturation'),
