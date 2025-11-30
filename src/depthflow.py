@@ -333,6 +333,10 @@ class Depthflow:
             backend="headless",
         )
 
+        # Fix: Disable upscaler to prevent incorrect resolution doubling
+        # The pypi depthflow package incorrectly defaults upscaler.scale to 2
+        scene.config.upscaler.scale = 1
+
         # Convert image and depthmap to numpy arrays
         if image.is_cuda:
             image = image.cpu().numpy()
@@ -410,6 +414,15 @@ class Depthflow:
 
         # Get width and height of images
         height, width = image.shape[1], image.shape[2]
+
+        # Validate image dimensions against OpenGL texture limits
+        # Most OpenGL contexts have a maximum texture size of 16384
+        MAX_TEXTURE_SIZE = 16384
+        if width > MAX_TEXTURE_SIZE or height > MAX_TEXTURE_SIZE:
+            raise ValueError(
+                f"Image dimensions ({width}x{height}) exceed OpenGL maximum texture size ({MAX_TEXTURE_SIZE}). "
+                f"Please resize your input image to be at most {MAX_TEXTURE_SIZE}x{MAX_TEXTURE_SIZE} pixels."
+            )
 
         # Input the image and depthmap into the scene
         # Store the image and depth sequences in the scene for frame-by-frame processing
