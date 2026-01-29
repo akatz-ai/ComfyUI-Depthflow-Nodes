@@ -11,9 +11,9 @@
 ## 🚀 Showcase
 
 <div style="display: inline-block;">
-    <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3ExZHZ1NzN0MW1tbHMydHE1ZXJqeXFrcDQxYndvMGJ3d25yNzRibiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hsD6dpQuIeu9h7t8b1/giphy.webp" alt="Description" width="250"/>
-    <img src="https://media3.giphy.com/media/EFPKZv80znaW1xHh1M/giphy.webp" alt="Description" width="250"/>
-    <img src="https://media0.giphy.com/media/JO0JR2MbaBprvzg41M/giphy.gif" alt="Description" width="250"/>
+    <img src="https://github.com/user-attachments/assets/1944bc9a-1468-4931-8a0b-b77a27cc29c3" alt="Description" width="250"/>
+    <img src="https://github.com/user-attachments/assets/5a4f391e-5f66-40a1-b79d-ae11a258ae87" alt="Description" width="250"/>
+    <img src="https://github.com/user-attachments/assets/f08fba13-4bff-48fe-9909-1162a730a5b5" alt="Description" width="250"/>
 </div>
 
 ## 🖥️ Custom Environment
@@ -66,7 +66,8 @@ Enhance the parallax animation with customizable effects such as Depth of Field 
 
 **Examples:**
 
-![](https://media1.giphy.com/media/nBiAFUBE4BSm87CcQm/giphy.webp)
+![dof-effect-df-demo](https://github.com/user-attachments/assets/c918ff49-233d-4896-8868-de90dd4b12bc)
+![vignette-demo-df](https://github.com/user-attachments/assets/7107d41b-41a1-4950-87f7-2532aee36618)
 
 *(Depth of Field effect modulated over time by a feature to more clearly demonstrate the effect)*
 
@@ -91,8 +92,8 @@ Simplify your workflow with ready-to-use presets for common animations. Nodes li
 
 **Examples**:
 
-![](https://media2.giphy.com/media/C69HgFr9C2b2pdlYF9/giphy.webp)
-<img src="https://media2.giphy.com/media/h5Lh02liQQlXe2FcAl/giphy.webp" alt="Description" width="238"/>
+![orbit-circle-dolly-df-demo](https://github.com/user-attachments/assets/f5ce8730-1318-4b2e-885b-e1f05ab96eb5)
+<img src="https://github.com/user-attachments/assets/18489250-03f5-4206-8507-c1ef90a69c2f" alt="Description" width="238"/>
 
 #### **Motion Components**
 
