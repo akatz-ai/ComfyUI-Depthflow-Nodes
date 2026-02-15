@@ -47,6 +47,11 @@ def parse_color_string(color_str):
     
     # Handle RGB/RGBA comma-separated format
     elif ',' in color_str:
+        # Explicitly reject CSS-style rgb()/rgba() notation since this parser
+        # only supports raw comma-separated numeric values.
+        if '(' in color_str or ')' in color_str:
+            raise ValueError(f"Unsupported color format: {color_str}")
+
         parts = [p.strip() for p in color_str.split(',')]
         
         if len(parts) not in (3, 4):

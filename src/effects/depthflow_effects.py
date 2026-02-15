@@ -175,11 +175,11 @@ class DepthflowEffectVignette(DepthflowEffects):
                 "vignette_enable": ("BOOLEAN", {"default": True}),
                 "vignette_intensity": (
                     "FLOAT",
-                    {"default": 30, "min": 0.0, "max": 100.0, "step": 0.1},
+                    {"default": 0.2, "min": 0.0, "max": 1.0, "step": 0.01},
                 ),
                 "vignette_decay": (
                     "FLOAT",
-                    {"default": 0.1, "min": 0.0, "max": 1.0, "step": 0.01},
+                    {"default": 20, "min": 0.0, "max": 100.0, "step": 0.1},
                 ),
             },
         }
@@ -205,8 +205,8 @@ class DepthflowEffectVignette(DepthflowEffects):
         effects.update(
             {
                 "vignette_enable": kwargs.get("vignette_enable", True),
-                "vignette_intensity": kwargs.get("vignette_intensity", 30),
-                "vignette_decay": kwargs.get("vignette_decay", 0.1),
+                "vignette_intensity": kwargs.get("vignette_intensity", 0.2),
+                "vignette_decay": kwargs.get("vignette_decay", 20),
             }
         )
         return (effects,)
