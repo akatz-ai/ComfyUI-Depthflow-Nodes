@@ -63,6 +63,7 @@ class DepthflowMotionSine(DepthflowMotion):
                 phase=phase,
                 reverse=reverse,
                 bias=bias,
+                cumulative=cumulative,
             ),
         )
 
@@ -124,6 +125,7 @@ class DepthflowMotionCosine(DepthflowMotion):
                 phase=phase,
                 reverse=reverse,
                 bias=bias,
+                cumulative=cumulative,
             ),
         )
 
@@ -191,6 +193,7 @@ class DepthflowMotionLinear(DepthflowMotion):
                 hight=high,
                 exponent=exponent,
                 reverse=reverse,
+                cumulative=cumulative,
             ),
         )
 
@@ -252,6 +255,7 @@ class DepthflowMotionTriangle(DepthflowMotion):
                 phase=phase,
                 reverse=reverse,
                 bias=bias,
+                cumulative=cumulative,
             ),
         )
 
